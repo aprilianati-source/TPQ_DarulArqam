@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Absensi TPQ - Simpan ke Spreadsheet</title>
+  <title>Absensi TPQ - Simpan ke Spreadsheet (Urut Nama)</title>
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div>
         <h3 class="mb-0">Absensi TPQ - Kelas A</h3>
-        <div class="small-muted">Kelola daftar santri & absensi harian</div>
+        <div class="small-muted">Kelola daftar santri & absensi harian (urut nama saat simpan)</div>
       </div>
       <div>
         <button id="homeBtn" class="btn btn-outline-success">Home</button>
@@ -68,7 +68,7 @@
           <button id="resetBtn" class="btn btn-dark">Reset</button>
           <button id="validateBtn" class="btn btn-validate">Validasi & Simpan (local)</button>
           <button id="downloadCsv" class="btn btn-outline-primary">Unduh CSV</button>
-          <button id="saveToSheet" class="btn btn-success">Simpan ke Spreadsheet</button>
+          <button id="saveToSheet" class="btn btn-success">Simpan ke Spreadsheet (urut nama)</button>
           <div id="sheetStatus" class="align-self-center small-muted ms-2"></div>
         </div>
       </div>
@@ -87,9 +87,7 @@
           <th style="width:120px">Aksi</th>
         </tr>
       </thead>
-      <tbody id="studentsBody">
-        <!-- diisi oleh JS -->
-      </tbody>
+      <tbody id="studentsBody"></tbody>
     </table>
   </div>
 </div>
@@ -128,12 +126,12 @@
 <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 
 <script>
-/* ===== GANTI INI: masukkan URL Web App Google Apps Script yang di-deploy =====
+/* ===== MASUKKAN INI: Web App URL dari Apps Script yang akan di-deploy =====
    Contoh: https://script.google.com/macros/s/AKfycbx.../exec
 */
 const GOOGLE_SHEETS_WEBAPP_URL = ''; // <-- masukkan di sini
 
-/* ===== DATA AWAL (sesuaikan) ===== */
+/* ===== DATA AWAL (ubah sesuai kebutuhan) ===== */
 const defaultStudents = [
   { id: '001', name: 'Aariz Zayan' },
   { id: '002', name: 'Aisha Zahira' },
@@ -149,7 +147,7 @@ function nowTimeString() { return new Date().toLocaleTimeString(); }
 function storageKeyStudents() { return 'absensi_tpq_students'; }
 function storageKeyForDate(d) { return 'absensi_tpq_' + d; }
 
-/* ===== LOAD / SAVE MASTER STUDENT LIST ===== */
+/* ===== MASTER STUDENT LIST PERSISTENCE ===== */
 function loadStudentList() {
   const raw = localStorage.getItem(storageKeyStudents());
   if (raw) {
@@ -160,7 +158,7 @@ function loadStudentList() {
 }
 function saveStudentList(list) { localStorage.setItem(storageKeyStudents(), JSON.stringify(list)); }
 
-/* ===== LOAD / SAVE ATTENDANCE PER DATE ===== */
+/* ===== ATTENDANCE PER DATE ===== */
 function loadAttendanceForDate(dateStr) {
   const raw = localStorage.getItem(storageKeyForDate(dateStr));
   if (raw) {
@@ -278,9 +276,9 @@ function onValidate() {
 }
 function downloadCsv() {
   const dateStr = document.getElementById('dateInput').value;
-  let csv = 'No,ID,Nama,Status,Waktu\\n';
+  let csv = 'No,ID,Nama,Status,Waktu\n';
   students.forEach((s,idx)=> {
-    csv += `${idx+1},"${s.id}","${s.name}","${s.status || 'Belum'}","${s.time || ''}"\\n`;
+    csv += `${idx+1},"${s.id}","${s.name}","${s.status || 'Belum'}","${s.time || ''}"\n`;
   });
   const blob = new Blob([csv], { type: 'text/csv' });
   const url = URL.createObjectURL(blob);
@@ -344,13 +342,20 @@ function flashMessage(text) {
 /* ===== SAVE TO GOOGLE SHEETS (POST) =====
    Payload:
    { date: "YYYY-MM-DD", data: [ {id,name,status,time}, ... ] }
+   NOTE: sebelum dikirim, kita URUTKAN data berdasarkan nama (A->Z) di sisi client,
+   agar Apps Script tidak perlu mengurutkan lagi (Apps Script juga akan mengurutkan jika diperlukan).
 */
 async function saveToGoogleSheets() {
   if (!GOOGLE_SHEETS_WEBAPP_URL) {
     alert('URL Google Sheets WebApp belum dikonfigurasi. Masukkan URL di variable GOOGLE_SHEETS_WEBAPP_URL di file HTML.');
     return;
   }
-  const payload = { date: document.getElementById('dateInput').value, data: students.map(s => ({ id: s.id, name: s.name, status: s.status, time: s.time })) };
+
+  // Clone data and sort by name ascending
+  const payloadData = students.map(s => ({ id: s.id, name: s.name, status: s.status || 'Belum', time: s.time || '' }))
+                             .sort((a,b) => a.name.localeCompare(b.name));
+
+  const payload = { date: document.getElementById('dateInput').value, data: payloadData };
   document.getElementById('sheetStatus').innerText = 'Mengirim...';
   try {
     const resp = await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
@@ -361,7 +366,7 @@ async function saveToGoogleSheets() {
     const text = await resp.text();
     if (resp.ok) {
       document.getElementById('sheetStatus').innerText = 'Tersimpan ke Spreadsheet';
-      flashMessage('Sinkron ke spreadsheet berhasil');
+      flashMessage('Sinkron ke spreadsheet berhasil (data terurut A→Z)');
     } else {
       document.getElementById('sheetStatus').innerText = 'Gagal: ' + resp.status;
       alert('Gagal menulis ke spreadsheet: ' + text);
