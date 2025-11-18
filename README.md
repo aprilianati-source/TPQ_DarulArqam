@@ -3,7 +3,7 @@
   <head>
     <base target="_top">
     <style>
-      body{font-family: Arial; padding:10px; width:350px;}
+      body{font-family: Arial; padding:10px; width:360px;}
       label{font-size:12px;}
       input, textarea, select, button {padding:6px; margin:6px 0; width:100%; box-sizing:border-box;}
       table{width:100%; border-collapse:collapse; margin-top:8px; font-size:12px;}
@@ -14,18 +14,18 @@
     </style>
   </head>
   <body>
-    <h4>Aplikasi Kas - Input Transaksi</h4>
+    <h4>Aplikasi Kas - Input</h4>
 
     <label>Alokasi Dana</label>
     <input id="alokasi" placeholder="Contoh: Operasional / Kas Umum">
 
     <div class="row">
       <div class="col">
-        <label>Pemasukan (angka)</label>
+        <label>Pemasukan</label>
         <input id="pemasukan" type="number" step="0.01" placeholder="0">
       </div>
       <div class="col">
-        <label>Pengeluaran (angka)</label>
+        <label>Pengeluaran</label>
         <input id="pengeluaran" type="number" step="0.01" placeholder="0">
       </div>
     </div>
@@ -46,7 +46,7 @@
     </div>
 
     <h5>Riwayat (terbaru paling bawah)</h5>
-    <div style="max-height:220px; overflow:auto;">
+    <div style="max-height:260px; overflow:auto;">
       <table id="tbl">
         <thead><tr><th>No</th><th>Alokasi</th><th>Pemasukan</th><th>Pengeluaran</th><th>Sisa</th></tr></thead>
         <tbody id="bodyTbl"></tbody>
@@ -54,7 +54,8 @@
     </div>
 
     <script>
-      function refreshAll(){
+      // Load awal: ambil ringkasan dan riwayat
+      function initialLoad(){
         google.script.run.withSuccessHandler(renderSummary).getSummary();
         google.script.run.withSuccessHandler(renderTransactions).getTransactions();
       }
@@ -72,17 +73,33 @@
           tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada transaksi</td></tr>';
           return;
         }
-        // tampilkan beberapa baris terakhir (misal 50)
-        var start = Math.max(0, rows.length - 50);
-        for (var i=start;i<rows.length;i++){
-          var r = rows[i];
-          var tr = document.createElement('tr');
-          tr.innerHTML = '<td>'+(r.no||'')+'</td>' +
-                         '<td>'+(r.alokasi||'')+'</td>' +
-                         '<td style="text-align:right">'+(r.pemasukan||0)+'</td>' +
-                         '<td style="text-align:right">'+(r.pengeluaran||0)+'</td>' +
-                         '<td style="text-align:right">'+(r.sisaSaldo||0)+'</td>';
-          tbody.appendChild(tr);
+        // tampilkan semua atau sebagian (misal semua)
+        for (var i=0;i<rows.length;i++){
+          appendRowToTable(rows[i], false); // false => jangan scroll
+        }
+        // scroll ke bawah supaya terlihat terbaru
+        var container = tbody.parentElement;
+        container.scrollTop = container.scrollHeight;
+      }
+
+      // Fungsi untuk menambahkan baris ke tabel riwayat di UI
+      // jika toBottom true -> scroll ke bawah
+      function appendRowToTable(rowObj, toBottom){
+        var tbody = document.getElementById('bodyTbl');
+        // jika sebelumnya hanya ada pesan "Belum ada transaksi", hapus
+        if (tbody.children.length === 1 && tbody.children[0].children.length === 1){
+          tbody.innerHTML = '';
+        }
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + (rowObj.no || '') + '</td>' +
+                       '<td>' + (rowObj.alokasi || '') + '</td>' +
+                       '<td style="text-align:right">' + (rowObj.pemasukan || 0) + '</td>' +
+                       '<td style="text-align:right">' + (rowObj.pengeluaran || 0) + '</td>' +
+                       '<td style="text-align:right">' + (rowObj.sisaSaldo || 0) + '</td>';
+        tbody.appendChild(tr);
+        if (toBottom){
+          var container = tbody.parentElement;
+          container.scrollTop = container.scrollHeight;
         }
       }
 
@@ -97,24 +114,31 @@
         if ((obj.pemasukan === '' || Number(obj.pemasukan) === 0) && (obj.pengeluaran === '' || Number(obj.pengeluaran) === 0)){
           alert('Masukkan nilai pemasukan atau pengeluaran (minimal salah satu).'); return;
         }
+
+        // Panggil server untuk simpan. Saat sukses, server mengembalikan objek transaksi baru.
         google.script.run.withSuccessHandler(function(res){
           if (res && res.success){
-            alert('Tersimpan. Sisa saldo: ' + res.sisaSaldo + (res.pembagian ? '\\nPembagian: ' + res.pembagian : ''));
+            var newTx = res.transaksi;
+            // langsung tambahkan ke riwayat UI tanpa reload penuh
+            appendRowToTable(newTx, true);
+            // perbarui ringkasan (ambil dari server)
+            google.script.run.withSuccessHandler(renderSummary).getSummary();
+
+            alert('Tersimpan. Sisa saldo: ' + newTx.sisaSaldo + (newTx.pembagian ? '\nPembagian: ' + newTx.pembagian : ''));
             // kosongkan input
             document.getElementById('alokasi').value = '';
             document.getElementById('pemasukan').value = '';
             document.getElementById('pengeluaran').value = '';
             document.getElementById('pembagian').value = '';
             document.getElementById('catatan').value = '';
-            refreshAll();
           } else {
             alert('Gagal menyimpan transaksi.');
           }
         }).addTransaction(obj);
       });
 
-      // initial load
-      refreshAll();
+      // Jalankan load awal saat dibuka
+      initialLoad();
     </script>
   </body>
 </html>
