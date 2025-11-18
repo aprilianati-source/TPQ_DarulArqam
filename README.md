@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Absensi TPQ</title>
+  <title>Absensi TPQ - dengan Spreadsheet</title>
 
-  <!-- Bootstrap CSS (CDN) -->
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
@@ -20,7 +20,7 @@
 </head>
 <body>
 <div class="container">
-  <div class="card p-3 mb-4">
+  <div class="card p-3 mb-3">
     <div class="d-flex justify-content-between align-items-center mb-2">
       <div>
         <h3 class="mb-0">Absensi TPQ - Kelas A</h3>
@@ -32,12 +32,20 @@
     </div>
 
     <div class="row g-3">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label">Pilih Tanggal</label>
         <input id="dateInput" type="date" class="form-control"/>
       </div>
 
-      <div class="col-md-8">
+      <div class="col-md-3">
+        <label class="form-label">Aksi Santri</label>
+        <div class="d-flex gap-2">
+          <button id="addStudentBtn" class="btn btn-primary w-100">Tambah Santri</button>
+          <button id="delAllBtn" class="btn btn-outline-danger" title="Hapus semua santri">Hapus Semua</button>
+        </div>
+      </div>
+
+      <div class="col-md-6">
         <label class="form-label">Mode Absensi</label>
         <div class="btn-group w-100" role="group">
           <input type="radio" class="btn-check" name="mode" id="modeQr" autocomplete="off" checked>
@@ -50,16 +58,18 @@
 
       <div class="col-12">
         <div id="qrSection" class="mb-3">
-          <button id="startScan" class="btn btn-scan me-2"><i class="bi-qr-scan"></i> Scan QR</button>
+          <button id="startScan" class="btn btn-scan me-2">Scan QR</button>
           <button id="stopScan" class="btn btn-secondary me-2" style="display:none">Stop</button>
         </div>
 
         <div id="qr-reader" style="display:none"></div>
 
-        <div class="mt-3">
-          <button id="resetBtn" class="btn btn-dark me-2">Reset</button>
-          <button id="validateBtn" class="btn btn-validate">Validasi & Simpan</button>
-          <button id="downloadCsv" class="btn btn-outline-primary ms-2">Unduh CSV</button>
+        <div class="mt-3 d-flex gap-2">
+          <button id="resetBtn" class="btn btn-dark">Reset</button>
+          <button id="validateBtn" class="btn btn-validate">Validasi & Simpan (local)</button>
+          <button id="downloadCsv" class="btn btn-outline-primary">Unduh CSV</button>
+          <button id="saveToSheet" class="btn btn-success">Simpan ke Spreadsheet</button>
+          <div id="sheetStatus" class="align-self-center small-muted ms-2"></div>
         </div>
       </div>
     </div>
@@ -70,9 +80,11 @@
       <thead class="border-bottom">
         <tr>
           <th style="width:70px">No.</th>
+          <th>ID</th>
           <th>Nama</th>
           <th style="width:140px">Status</th>
           <th style="width:180px">Waktu Kehadiran</th>
+          <th style="width:120px">Aksi</th>
         </tr>
       </thead>
       <tbody id="studentsBody">
@@ -82,66 +94,96 @@
   </div>
 </div>
 
-<!-- Modal ringkasan -->
-<div class="modal" tabindex="-1" id="summaryModal">
-  <div class="modal-dialog modal-dialog-centered">
+<!-- Modal Tambah/Edit -->
+<div class="modal" tabindex="-1" id="studentModal">
+  <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Ringkasan Absensi</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" id="summaryBody"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-      </div>
+      <form id="studentForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="studentModalTitle">Tambah Santri</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editIndex" />
+          <div class="mb-3">
+            <label class="form-label">ID Santri</label>
+            <input id="studentId" class="form-control" required placeholder="mis: 001" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Nama Santri</label>
+            <input id="studentName" class="form-control" required placeholder="Nama lengkap" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="saveStudentBtn" type="submit" class="btn btn-primary">Simpan</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
 
-<!-- Bootstrap JS & dependencies -->
+<!-- Bootstrap & html5-qrcode -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- html5-qrcode library untuk scan QR (CDN) -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
 
 <script>
-/* ===== DATA AWAL - sesuaikan daftar santri di sini ===== */
-const initialStudents = [
+/* ===== KONFIG: ganti dengan WebApp URL hasil deploy Google Apps Script =====
+   Jika belum men-deploy, biarkan kosong. Petunjuk deploy ada di bawah.
+*/
+const GOOGLE_SHEETS_WEBAPP_URL = ''; // <-- masukkan URL web app di sini
+
+/* ===== DATA AWAL ===== */
+const defaultStudents = [
   { id: '001', name: 'Aariz Zayan' },
   { id: '002', name: 'Aisha Zahira' },
-  { id: '003', name: 'Hana Zafira' },
-  { id: '004', name: 'Ahmad Ilham' },
-  { id: '005', name: 'Siti Nur' }
+  { id: '003', name: 'Hana Zafira' }
 ];
 
-/* ===== STATE ===== */
-let students = [];
+let students = []; // array objek {id,name,status,time}
 let qrScanner = null;
 let scanning = false;
 
 /* ===== UTIL ===== */
 function nowTimeString() {
-  const d = new Date();
-  // format HH:MM:SS
-  return d.toLocaleTimeString();
+  return new Date().toLocaleTimeString();
 }
 
-function formatDateInputValue(v) {
-  // v already in YYYY-MM-DD
-  return v || new Date().toISOString().slice(0,10);
+function storageKeyStudents() {
+  return 'absensi_tpq_students';
 }
 
-/* ===== PERSISTENCE ===== */
-function saveToLocal(dateStr) {
-  const key = 'absensi_tpq_' + dateStr;
-  const payload = { date: dateStr, students };
-  localStorage.setItem(key, JSON.stringify(payload));
+function storageKeyForDate(d) {
+  return 'absensi_tpq_' + d;
 }
 
-function loadFromLocal(dateStr) {
-  const key = 'absensi_tpq_' + dateStr;
-  const raw = localStorage.getItem(key);
-  if (!raw) return null;
-  try { return JSON.parse(raw); } catch(e) { return null; }
+/* ===== PERSISTENCE SANTRI (daftar) ===== */
+function loadStudentList() {
+  const raw = localStorage.getItem(storageKeyStudents());
+  if (raw) {
+    try { return JSON.parse(raw); } catch(e) {}
+  }
+  // default
+  localStorage.setItem(storageKeyStudents(), JSON.stringify(defaultStudents));
+  return defaultStudents.slice();
+}
+function saveStudentList(list) {
+  localStorage.setItem(storageKeyStudents(), JSON.stringify(list));
+}
+
+/* ===== LOAD / SAVE ABSENSI PER TANGGAL ===== */
+function loadAttendanceForDate(dateStr) {
+  const raw = localStorage.getItem(storageKeyForDate(dateStr));
+  if (raw) {
+    try { return JSON.parse(raw).students; } catch(e) {}
+  }
+  // jika belum ada, bangun dari daftar siswa (default status Belum)
+  const list = loadStudentList();
+  return list.map(s => ({ id: s.id, name: s.name, status: 'Belum', time: '' }));
+}
+function saveAttendanceForDate(dateStr, arr) {
+  const payload = { date: dateStr, students: arr };
+  localStorage.setItem(storageKeyForDate(dateStr), JSON.stringify(payload));
 }
 
 /* ===== RENDER ===== */
@@ -151,165 +193,106 @@ function renderTable() {
   students.forEach((s, idx) => {
     const tr = document.createElement('tr');
 
-    const noTd = document.createElement('td');
-    noTd.textContent = String(idx+1).padStart(3,'0');
-    tr.appendChild(noTd);
-
-    const nameTd = document.createElement('td');
-    nameTd.textContent = s.name;
-    tr.appendChild(nameTd);
+    const noTd = document.createElement('td'); noTd.textContent = String(idx+1).padStart(3,'0'); tr.appendChild(noTd);
+    const idTd = document.createElement('td'); idTd.textContent = s.id; tr.appendChild(idTd);
+    const nameTd = document.createElement('td'); nameTd.textContent = s.name; tr.appendChild(nameTd);
 
     const statusTd = document.createElement('td');
     const btn = document.createElement('button');
     btn.className = 'btn status-btn';
     btn.innerText = s.status || 'Belum';
-    btn.setAttribute('data-id', s.id);
-    btn.disabled = (document.getElementById('modeQr').checked); // disable in QR mode
-    // style
-    if ((s.status||'Belum') === 'Hadir') {
-      btn.classList.remove('btn-outline-secondary');
-      btn.classList.add('btn-success');
-    } else {
-      btn.classList.remove('btn-success');
-      btn.classList.add('btn-outline-secondary');
-    }
-    btn.addEventListener('click', onManualToggle);
-    statusTd.appendChild(btn);
-    tr.appendChild(statusTd);
+    btn.disabled = (document.getElementById('modeQr').checked);
+    btn.addEventListener('click', ()=> {
+      if ((s.status||'Belum') === 'Hadir') { s.status = 'Belum'; s.time = ''; }
+      else { s.status = 'Hadir'; s.time = nowTimeString(); }
+      renderTable();
+    });
+    if ((s.status||'Belum') === 'Hadir') { btn.classList.add('btn-success'); } else { btn.classList.add('btn-outline-secondary'); }
+    statusTd.appendChild(btn); tr.appendChild(statusTd);
 
-    const timeTd = document.createElement('td');
-    timeTd.textContent = s.time || '-';
-    tr.appendChild(timeTd);
+    const timeTd = document.createElement('td'); timeTd.textContent = s.time || '-'; tr.appendChild(timeTd);
+
+    const actionTd = document.createElement('td');
+    const editBtn = document.createElement('button'); editBtn.className='btn btn-sm btn-outline-primary me-1'; editBtn.textContent='Edit';
+    editBtn.addEventListener('click', ()=> openStudentModal('edit', idx));
+    const delBtn = document.createElement('button'); delBtn.className='btn btn-sm btn-outline-danger'; delBtn.textContent='Hapus';
+    delBtn.addEventListener('click', ()=> { if(confirm('Hapus santri ini?')) { removeStudent(s.id); }});
+    actionTd.appendChild(editBtn); actionTd.appendChild(delBtn);
+    tr.appendChild(actionTd);
 
     tbody.appendChild(tr);
   });
 }
 
-/* ===== MANUAL TOGGLE ===== */
-function onManualToggle(e) {
-  const id = e.currentTarget.getAttribute('data-id');
-  const s = students.find(x => x.id === id);
-  if (!s) return;
-  if ((s.status||'Belum') === 'Hadir') {
-    s.status = 'Belum';
-    s.time = '';
-  } else {
-    s.status = 'Hadir';
-    s.time = nowTimeString();
+/* ===== MANAGE STUDENT LIST ===== */
+function openStudentModal(mode='add', index=null) {
+  const modalEl = document.getElementById('studentModal');
+  const bs = new bootstrap.Modal(modalEl);
+  document.getElementById('studentForm').reset();
+  document.getElementById('editIndex').value = '';
+  document.getElementById('studentModalTitle').innerText = mode === 'add' ? 'Tambah Santri' : 'Edit Santri';
+  if (mode === 'edit' && index !== null) {
+    const s = students[index];
+    document.getElementById('studentId').value = s.id;
+    document.getElementById('studentName').value = s.name;
+    document.getElementById('editIndex').value = index;
   }
-  renderTable();
-}
-
-/* ===== QR HANDLING ===== */
-function markPresentById(id) {
-  const s = students.find(x => x.id === id);
-  if (!s) {
-    // jika id tidak ditemukan, tampilkan notifikasi singkat
-    flashMessage('QR tidak cocok: ' + id);
-    return;
-  }
-  if ((s.status||'Belum') !== 'Hadir') {
-    s.status = 'Hadir';
-    s.time = nowTimeString();
-    renderTable();
-    flashMessage(s.name + ' terabsen');
-  } else {
-    flashMessage(s.name + ' sudah terabsen');
-  }
-}
-
-function flashMessage(text) {
-  // kecil notifikasi top
-  const el = document.createElement('div');
-  el.className = 'toast align-items-center text-bg-dark border-0';
-  el.style.position = 'fixed';
-  el.style.right = '18px';
-  el.style.top = '18px';
-  el.style.zIndex = '9999';
-  el.role = 'alert';
-  el.setAttribute('aria-live', 'assertive');
-  el.setAttribute('aria-atomic', 'true');
-  el.innerHTML = '<div class="d-flex"><div class="toast-body">'+text+'</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>';
-  document.body.appendChild(el);
-  const bs = new bootstrap.Toast(el, { delay: 1800 });
   bs.show();
-  el.addEventListener('hidden.bs.toast', ()=> el.remove());
 }
 
-/* ===== EVENTS UI ===== */
-document.getElementById('dateInput').addEventListener('change', onDateChange);
-document.getElementById('modeQr').addEventListener('change', onModeChange);
-document.getElementById('modeManual').addEventListener('change', onModeChange);
-document.getElementById('resetBtn').addEventListener('click', onReset);
-document.getElementById('validateBtn').addEventListener('click', onValidate);
-document.getElementById('startScan').addEventListener('click', startQrScanner);
-document.getElementById('stopScan').addEventListener('click', stopQrScanner);
-document.getElementById('downloadCsv').addEventListener('click', downloadCsv);
-document.getElementById('homeBtn').addEventListener('click', ()=> location.reload());
-
-function initialize() {
-  // set default date = today
-  const dateInput = document.getElementById('dateInput');
-  dateInput.value = new Date().toISOString().slice(0,10);
-
-  // init students from localStorage for the date if available
-  loadForCurrentDate();
-
-  renderTable();
-  onModeChange();
-}
-
-function loadForCurrentDate() {
-  const dateStr = document.getElementById('dateInput').value;
-  const saved = loadFromLocal(dateStr);
-  if (saved && saved.students) {
-    students = saved.students;
+function addOrUpdateStudentFromForm(e) {
+  e.preventDefault();
+  const id = document.getElementById('studentId').value.trim();
+  const name = document.getElementById('studentName').value.trim();
+  if (!id || !name) return alert('ID dan Nama wajib diisi');
+  const editIndex = document.getElementById('editIndex').value;
+  // update master student list
+  let master = loadStudentList();
+  if (editIndex !== '') {
+    // editing: replace id/name in master and attendance
+    const oldId = students[editIndex].id;
+    master = master.map(m => m.id === oldId ? { id, name } : m);
+    saveStudentList(master);
+    // update attendance entries for all dates currently loaded (only current date shown)
+    students[editIndex].id = id; students[editIndex].name = name;
   } else {
-    // clone initialStudents with default status
-    students = initialStudents.map(x => ({ ...x, status: 'Belum', time: '' }));
+    // tambah jika id belum ada
+    if (master.find(x => x.id === id)) return alert('ID sudah ada, gunakan ID unik.');
+    master.push({ id, name });
+    saveStudentList(master);
+    // tambahkan ke daftar current students (status Belum)
+    students.push({ id, name, status: 'Belum', time: '' });
   }
+  // simpan attendance untuk tanggal aktif
+  const dateStr = document.getElementById('dateInput').value;
+  saveAttendanceForDate(dateStr, students);
+  renderTable();
+  bootstrap.Modal.getInstance(document.getElementById('studentModal')).hide();
 }
 
-function onDateChange() {
-  stopQrScanner();
-  loadForCurrentDate();
+function removeStudent(id) {
+  // hapus dari master list dan dari attendance
+  let master = loadStudentList().filter(x => x.id !== id);
+  saveStudentList(master);
+  students = students.filter(s => s.id !== id);
+  const dateStr = document.getElementById('dateInput').value;
+  saveAttendanceForDate(dateStr, students);
   renderTable();
 }
 
-function onModeChange() {
-  const isQr = document.getElementById('modeQr').checked;
-  document.getElementById('qrSection').style.display = isQr ? 'block' : 'none';
-  // enable/disable manual buttons
-  renderTable();
-}
-
-/* ===== Reset ===== */
+/* ===== RESET, VALIDATE, CSV ===== */
 function onReset() {
   if (!confirm('Reset semua status absensi untuk tanggal ini?')) return;
   students.forEach(s => { s.status = 'Belum'; s.time = ''; });
   renderTable();
-  flashMessage('Semua status direset');
 }
 
-/* ===== Validate (simpan) ===== */
 function onValidate() {
   const dateStr = document.getElementById('dateInput').value;
-  saveToLocal(dateStr);
-  // tampilkan ringkasan
-  const hadir = students.filter(s => (s.status||'Belum') === 'Hadir').length;
-  const belum = students.length - hadir;
-  const body = document.getElementById('summaryBody');
-  body.innerHTML = `<p>Tanggal: <strong>${dateStr}</strong></p>
-                    <p>Jumlah santri: <strong>${students.length}</strong></p>
-                    <p>Hadir: <strong>${hadir}</strong></p>
-                    <p>Belum hadir: <strong>${belum}</strong></p>
-                    <hr>
-                    <p>Data telah disimpan ke <code>localStorage</code> browser.</p>`;
-  const modal = new bootstrap.Modal(document.getElementById('summaryModal'));
-  modal.show();
+  saveAttendanceForDate(dateStr, students);
+  flashMessage('Data disimpan ke localStorage untuk tanggal ' + dateStr);
 }
 
-/* ===== CSV download ===== */
 function downloadCsv() {
   const dateStr = document.getElementById('dateInput').value;
   let csv = 'No,ID,Nama,Status,Waktu\\n';
@@ -327,7 +310,15 @@ function downloadCsv() {
   URL.revokeObjectURL(url);
 }
 
-/* ===== QR SCANNER ===== */
+/* ===== QR SCAN ===== */
+function markPresentById(id) {
+  const s = students.find(x => x.id === id);
+  if (!s) { flashMessage('QR tidak cocok: ' + id); return; }
+  if ((s.status||'Belum') !== 'Hadir') {
+    s.status = 'Hadir'; s.time = nowTimeString(); renderTable(); flashMessage(s.name + ' terabsen');
+  } else flashMessage(s.name + ' sudah terabsen');
+}
+
 function startQrScanner() {
   if (scanning) return;
   const qrReaderEl = document.getElementById('qr-reader');
@@ -335,65 +326,109 @@ function startQrScanner() {
   document.getElementById('startScan').style.display = 'none';
   document.getElementById('stopScan').style.display = 'inline-block';
   scanning = true;
-
-  if (!qrScanner) {
-    // create scanner
-    qrScanner = new Html5Qrcode("qr-reader");
-  }
-
+  if (!qrScanner) qrScanner = new Html5Qrcode("qr-reader");
   const config = { fps: 10, qrbox: { width: 250, height: 250 } };
   Html5Qrcode.getCameras().then(cameras => {
     const cameraId = cameras && cameras.length ? cameras[0].id : null;
-    if (!cameraId) {
-      flashMessage('Tidak ada kamera terdeteksi.');
-      return;
-    }
-    qrScanner.start(
-      cameraId,
-      config,
-      qrCodeMessage => {
-        // hasil scan (string). Anggap kode QR berisi id santri, mis: "001"
-        markPresentById(qrCodeMessage.trim());
-      },
-      errorMessage => {
-        // console.log('scan error', errorMessage);
-      }
-    ).catch(err => {
-      flashMessage('Gagal mengakses kamera: ' + err);
-      scanning = false;
-      document.getElementById('qr-reader').style.display = 'none';
-      document.getElementById('startScan').style.display = 'inline-block';
-      document.getElementById('stopScan').style.display = 'none';
-    });
-  }).catch(err => {
-    flashMessage('Gagal mendapatkan kamera: ' + err);
-  });
+    if (!cameraId) { flashMessage('Tidak ada kamera'); return; }
+    qrScanner.start(cameraId, config, qrCodeMessage => { markPresentById(qrCodeMessage.trim()); })
+      .catch(err=> { flashMessage('Gagal akses kamera: '+err); scanning=false; });
+  }).catch(err => { flashMessage('Gagal dapat kamera: '+err); });
 }
 
 function stopQrScanner() {
-  if (!scanning || !qrScanner) {
-    document.getElementById('qr-reader').style.display = 'none';
-    document.getElementById('startScan').style.display = 'inline-block';
-    document.getElementById('stopScan').style.display = 'none';
-    scanning = false;
-    return;
-  }
-  qrScanner.stop().then(() => {
-    scanning = false;
-    document.getElementById('qr-reader').style.display = 'none';
-    document.getElementById('startScan').style.display = 'inline-block';
-    document.getElementById('stopScan').style.display = 'none';
-  }).catch(err=>{
-    scanning = false;
-    document.getElementById('qr-reader').style.display = 'none';
-    document.getElementById('startScan').style.display = 'inline-block';
-    document.getElementById('stopScan').style.display = 'none';
-  });
+  if (!scanning || !qrScanner) { document.getElementById('qr-reader').style.display='none'; document.getElementById('startScan').style.display='inline-block'; document.getElementById('stopScan').style.display='none'; scanning=false; return; }
+  qrScanner.stop().then(()=> {
+    scanning=false;
+    document.getElementById('qr-reader').style.display='none';
+    document.getElementById('startScan').style.display='inline-block';
+    document.getElementById('stopScan').style.display='none';
+  }).catch(()=> { scanning=false; document.getElementById('qr-reader').style.display='none'; });
 }
 
-/* ===== Inisialisasi ===== */
-initialize();
+/* ===== FLASH MESSAGE ===== */
+function flashMessage(text) {
+  const el = document.createElement('div');
+  el.className = 'toast align-items-center text-bg-dark border-0';
+  el.style.position='fixed'; el.style.right='18px'; el.style.top='18px'; el.style.zIndex='9999';
+  el.role='alert'; el.setAttribute('aria-live','assertive'); el.setAttribute('aria-atomic','true');
+  el.innerHTML = '<div class="d-flex"><div class="toast-body">'+text+'</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button></div>';
+  document.body.appendChild(el);
+  const bs = new bootstrap.Toast(el,{delay:1500}); bs.show();
+  el.addEventListener('hidden.bs.toast', ()=> el.remove());
+}
 
+/* ===== SAVE TO GOOGLE SHEETS =====
+   Mengirim data (tanggal + daftar) ke WebApp endpoint (Google Apps Script).
+   Payload JSON: { date: "...", data: [ {id,name,status,time}, ... ] }
+*/
+async function saveToGoogleSheets() {
+  if (!GOOGLE_SHEETS_WEBAPP_URL) return alert('URL Google Sheets WebApp belum dikonfigurasi.');
+  const payload = { date: document.getElementById('dateInput').value, data: students };
+  document.getElementById('sheetStatus').innerText = 'Mengirim...';
+  try {
+    const resp = await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const text = await resp.text();
+    if (resp.ok) {
+      document.getElementById('sheetStatus').innerText = 'Tersimpan ke Spreadsheet';
+      flashMessage('Sinkron ke spreadsheet berhasil');
+    } else {
+      document.getElementById('sheetStatus').innerText = 'Gagal: ' + resp.status;
+      alert('Gagal menulis ke spreadsheet: ' + text);
+    }
+  } catch(err) {
+    document.getElementById('sheetStatus').innerText = 'Gagal koneksi';
+    alert('Gagal mengirim ke server: ' + err);
+  } finally {
+    setTimeout(()=> { document.getElementById('sheetStatus').innerText = ''; }, 3000);
+  }
+}
+
+/* ===== UI EVENTS ===== */
+document.getElementById('dateInput').addEventListener('change', ()=> {
+  stopQrScanner();
+  const dateStr = document.getElementById('dateInput').value;
+  students = loadAttendanceForDate(dateStr);
+  renderTable();
+});
+document.getElementById('modeQr').addEventListener('change', ()=> renderTable());
+document.getElementById('modeManual').addEventListener('change', ()=> renderTable());
+document.getElementById('resetBtn').addEventListener('click', onReset);
+document.getElementById('validateBtn').addEventListener('click', ()=> { saveAttendanceForDate(document.getElementById('dateInput').value, students); flashMessage('Tersimpan lokal'); });
+document.getElementById('downloadCsv').addEventListener('click', downloadCsv);
+document.getElementById('startScan').addEventListener('click', startQrScanner);
+document.getElementById('stopScan').addEventListener('click', stopQrScanner);
+document.getElementById('addStudentBtn').addEventListener('click', ()=> openStudentModal('add'));
+document.getElementById('studentForm').addEventListener('submit', addOrUpdateStudentFromForm);
+document.getElementById('delAllBtn').addEventListener('click', ()=> {
+  if (!confirm('Hapus semua santri (master list)? Ini juga akan menghapus dari localStorage daftar). Lanjutkan?')) return;
+  localStorage.removeItem(storageKeyStudents());
+  // reset to default
+  saveStudentList(defaultStudents.slice());
+  // reload attendance for date
+  const dateStr = document.getElementById('dateInput').value;
+  students = loadAttendanceForDate(dateStr);
+  saveAttendanceForDate(dateStr, students);
+  renderTable();
+});
+document.getElementById('saveToSheet').addEventListener('click', saveToGoogleSheets);
+document.getElementById('homeBtn').addEventListener('click', ()=> location.reload());
+
+/* ===== INIT ===== */
+function initialize() {
+  document.getElementById('dateInput').value = new Date().toISOString().slice(0,10);
+  // load master students (create if absent)
+  const master = loadStudentList();
+  // load attendance for selected date
+  const dateStr = document.getElementById('dateInput').value;
+  students = loadAttendanceForDate(dateStr);
+  renderTable();
+}
+initialize();
 </script>
 </body>
 </html>
