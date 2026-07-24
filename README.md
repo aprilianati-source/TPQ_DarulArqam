@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -20,10 +20,10 @@
       background-color: var(--bg-color); 
       color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding-bottom: 75px; /* Ruang untuk Bottom Navbar */
+      padding-bottom: 75px;
     }
 
-    /* Mobile First Styling */
+    /* Mobile First Layout */
     .mobile-container {
       max-width: 500px;
       margin: 0 auto;
@@ -50,6 +50,36 @@
     }
 
     .text-theme { color: var(--dark-color) !important; }
+
+    /* Logo Login Persegi Elegan */
+    .app-logo-wrapper {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
+      border-radius: 20px;
+      background: #fdfbf7;
+      border: 2px solid var(--main-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .app-logo { 
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Foto Profil User (Santri/Pengajar) */
+    .user-profile-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--main-color);
+    }
 
     /* Bottom Navigation Bar */
     .bottom-nav {
@@ -88,13 +118,6 @@
       font-weight: bold;
     }
 
-    .app-logo { 
-      max-width: 90px; 
-      max-height: 90px; 
-      object-fit: contain; 
-      border-radius: 12px;
-    }
-
     .preview-img {
       max-width: 100%;
       height: auto;
@@ -113,10 +136,15 @@
   <!-- ================= HALAMAN LOGIN ================= -->
   <div id="loginPage" class="mobile-container pt-4">
     <div class="card card-mobile text-center p-4">
-      <div class="mb-3 text-center">
-        <i class="fa-solid fa-book-quran text-theme display-3" id="defaultLogo"></i>
-        <img id="customLogo" src="" class="app-logo d-none" alt="Logo Aplikasi">
+      
+      <!-- LOGO PERSEGI ELEGAN -->
+      <div class="mb-3">
+        <div class="app-logo-wrapper">
+          <i class="fa-solid fa-book-quran text-theme display-4" id="defaultLogo"></i>
+          <img id="customLogo" src="" class="app-logo d-none" alt="Logo Aplikasi">
+        </div>
       </div>
+
       <h4 class="fw-bold text-theme mb-1">Rumah Qur'an</h4>
       <p class="text-muted small mb-4">Darul Arqam</p>
 
@@ -157,10 +185,12 @@
   <!-- ================= HALAMAN DASHBOARD ================= -->
   <div id="dashboardPage" class="mobile-container d-none">
     
-    <!-- Status Access Header -->
+    <!-- Header Status Akses Pengguna -->
     <div class="alert alert-sm bg-white border-0 shadow-sm p-3 mb-3 rounded-4">
       <div class="d-flex align-items-center">
-        <div class="me-3 fs-3 text-theme"><i class="fa-solid fa-circle-user"></i></div>
+        <div class="me-3" id="headerAvatarContainer">
+          <i class="fa-solid fa-circle-user fs-1 text-theme"></i>
+        </div>
         <div>
           <h6 class="mb-0 fw-bold" id="userRoleTitle">Santri Access</h6>
           <small class="text-muted" id="userRoleSubtitle">Mustawa Awwal</small>
@@ -207,7 +237,7 @@
     <!-- VIEW 4: MENU PENGATURAN (KHUSUS PENGAJAR) -->
     <div id="viewPengaturan" class="dashboard-view d-none">
       
-      <!-- Upload Aktivitas -->
+      <!-- Upload Informasi -->
       <div class="card card-mobile p-3 mb-3">
         <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-upload me-1"></i> Upload Informasi / Foto Aktivitas</h6>
         <div class="mb-2">
@@ -244,11 +274,10 @@
         </div>
       </div>
 
-      <!-- Pengaturan Logo & Background -->
+      <!-- Tampilan Aplikasi -->
       <div class="card card-mobile p-3 mb-3">
         <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-sliders me-1"></i> Tampilan Aplikasi</h6>
         
-        <!-- Ubah Logo Upload dari HP -->
         <div class="mb-3">
           <label class="form-label small fw-bold mb-1">Ubah Logo Login (Upload Foto dari HP)</label>
           <input type="file" id="inputLogoFile" accept="image/*" class="form-control form-control-sm mb-2">
@@ -258,7 +287,6 @@
 
         <hr class="my-2">
 
-        <!-- Ubah Warna Background -->
         <div>
           <label class="form-label small fw-bold mb-1">Ubah Warna Background</label>
           <div class="d-flex gap-2">
@@ -271,13 +299,20 @@
 
     </div>
 
-    <!-- VIEW 5: MENU AKUN (RESET/GANTI PASS & KELUAR) -->
+    <!-- VIEW 5: MENU AKUN (PROFILE & PASWORD) -->
     <div id="viewAkun" class="dashboard-view d-none">
       <div class="card card-mobile p-3 mb-3 text-center">
         <h6 class="fw-bold text-theme mb-3"><i class="fa-solid fa-user-gear me-1"></i> Pengaturan Akun & Akses</h6>
         
+        <!-- UNGGAL FOTO PROFIL (KHUSUS SANTRI / ALL) -->
+        <div class="mb-4 text-start border p-3 rounded-3 bg-light" id="profileUploadSection">
+          <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-image me-1"></i> Unggah Foto Profil</label>
+          <input type="file" id="inputProfilePhoto" accept="image/*" class="form-control form-control-sm mb-2">
+          <button class="btn btn-theme btn-sm w-100" onclick="simpanFotoProfilSantri()">Simpan Foto Profil</button>
+        </div>
+
         <div class="mb-4 text-start">
-          <label class="form-label small fw-bold">Ganti Password Akses Anda</label>
+          <label class="form-label small fw-bold"><i class="fa-solid fa-lock me-1"></i> Ganti Password Akses Anda</label>
           <input type="password" id="userNewPassInput" class="form-control form-control-sm mb-2" placeholder="Masukkan Password Baru">
           <button class="btn btn-theme btn-sm w-100" onclick="simpanGantiPasswordUser()">Simpan Password Baru</button>
         </div>
@@ -355,7 +390,7 @@
       if (!localStorage.getItem('rq_santri_db')) {
         let dbSantri = {};
         Object.keys(defaultDataSantri).forEach(key => {
-          dbSantri[key] = defaultDataSantri[key].map(nama => ({ nama: nama, pass: nama }));
+          dbSantri[key] = defaultDataSantri[key].map(nama => ({ nama: nama, pass: nama, foto: '' }));
         });
         localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
       }
@@ -374,7 +409,7 @@
         localStorage.setItem('rq_columns', JSON.stringify(defaultColumns));
       }
 
-      // Load Saved Theme
+      // Restore Theme
       const savedTheme = JSON.parse(localStorage.getItem('rq_theme_bg') || 'null');
       if (savedTheme) {
         setThemeBg(savedTheme.bg, savedTheme.main, savedTheme.dark, false);
@@ -456,6 +491,8 @@
       document.getElementById('userRoleTitle').innerText = currentRoleCategory === 'Pengajar' ? `Pengajar Kelas ${currentClassKey}` : currentUserName;
       document.getElementById('userRoleSubtitle').innerText = `Mustawa ${currentClassKey}`;
 
+      updateHeaderAvatar();
+
       const navInputNilai = document.getElementById('navInputNilai');
       const navPengaturan = document.getElementById('navPengaturan');
 
@@ -474,6 +511,21 @@
       switchView('viewAktivitas', document.querySelector('.bottom-nav-item'));
     }
 
+    function updateHeaderAvatar() {
+      const container = document.getElementById('headerAvatarContainer');
+      if (currentRoleCategory === 'Santri') {
+        const classSantriKey = "Santri " + currentClassKey;
+        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+        let santri = dbSantri[classSantriKey]?.find(s => s.nama === currentUserName);
+
+        if (santri && santri.foto) {
+          container.innerHTML = `<img src="${santri.foto}" class="user-profile-img">`;
+          return;
+        }
+      }
+      container.innerHTML = `<i class="fa-solid fa-circle-user fs-1 text-theme"></i>`;
+    }
+
     function switchView(viewId, btnEl) {
       document.querySelectorAll('.dashboard-view').forEach(el => el.classList.add('d-none'));
       document.getElementById(viewId).classList.remove('d-none');
@@ -482,7 +534,114 @@
       if(btnEl) btnEl.classList.add('active');
     }
 
-    // UPLOAD FOTO AKTIVITAS LOKAL (HP)
+    // UPLOAD FOTO PROFIL SANTRI
+    function simpanFotoProfilSantri() {
+      if (currentRoleCategory !== 'Santri') {
+        alert('Fitur unggah foto profil khusus untuk akun Santri.');
+        return;
+      }
+
+      const fileInput = document.getElementById('inputProfilePhoto');
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const classSantriKey = "Santri " + currentClassKey;
+          let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+          let santri = dbSantri[classSantriKey].find(s => s.nama === currentUserName);
+
+          if (santri) {
+            santri.foto = e.target.result;
+            localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+            updateHeaderAvatar();
+            alert('Foto profil berhasil diunggah!');
+            fileInput.value = '';
+          }
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        alert('Pilih foto dari galeri terlebih dahulu!');
+      }
+    }
+
+    // SIMPAN PENILAIAN & UPDATE REAL-TIME
+    function simpanDataPenilaian(e) {
+      e.preventDefault();
+      const nama = document.getElementById('inputSantriTarget').value;
+      if (!nama) return alert('Pilih santri!');
+
+      const columns = JSON.parse(localStorage.getItem('rq_columns'));
+      let recordValues = {};
+
+      columns.forEach((col, idx) => {
+        recordValues[col] = document.getElementById(`col_input_${idx}`).value || '-';
+      });
+
+      let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
+      
+      // Update jika data penilaian santri sudah ada, atau tambahkan jika baru
+      let existingIndex = reports.findIndex(r => r.kelasKey === currentClassKey && r.nama === nama);
+      if (existingIndex !== -1) {
+        reports[existingIndex].values = recordValues;
+      } else {
+        reports.push({ kelasKey: currentClassKey, nama: nama, values: recordValues });
+      }
+
+      localStorage.setItem('rq_reports', JSON.stringify(reports));
+
+      alert('Penilaian tersimpan dan berhasil diperbarui!');
+      renderTabelPenilaian();
+      switchView('viewLaporan', document.querySelectorAll('.bottom-nav-item')[1]);
+    }
+
+    function renderTabelPenilaian() {
+      const thead = document.getElementById('tabelHeader');
+      const tbody = document.getElementById('tabelDataSantri');
+      const columns = JSON.parse(localStorage.getItem('rq_columns'));
+
+      let headerHtml = `<tr><th>No</th><th>Nama</th>`;
+      columns.forEach(col => headerHtml += `<th>${col}</th>`);
+      if (currentRoleCategory === 'Pengajar') headerHtml += `<th>Aksi</th>`;
+      headerHtml += `</tr>`;
+      thead.innerHTML = headerHtml;
+
+      tbody.innerHTML = '';
+      let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
+      
+      // Filter laporan berdasarkan Kelas
+      let filtered = reports.filter(r => r.kelasKey === currentClassKey);
+      
+      // Jika login sebagai santri, tampilkan laporan miliknya saja
+      if (currentRoleCategory === 'Santri') {
+        filtered = filtered.filter(r => r.nama === currentUserName);
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${columns.length + 3}" class="text-muted">Belum ada data nilai.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        let row = `<tr><td>${index + 1}</td><td class="fw-bold">${item.nama}</td>`;
+        columns.forEach(col => row += `<td>${item.values[col] || '-'}</td>`);
+        if (currentRoleCategory === 'Pengajar') {
+          let origIndex = reports.indexOf(item);
+          row += `<td><button class="btn btn-danger btn-sm py-0 px-1" onclick="hapusPenilaian(${origIndex})"><i class="fa-solid fa-trash"></i></button></td>`;
+        }
+        row += `</tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function hapusPenilaian(index) {
+      if (confirm('Hapus baris penilaian ini?')) {
+        let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
+        reports.splice(index, 1);
+        localStorage.setItem('rq_reports', JSON.stringify(reports));
+        renderTabelPenilaian();
+      }
+    }
+
+    // INFORMASI AKTIVITAS
     function simpanAktivitasInfo() {
       const judul = document.getElementById('infoJudul').value;
       const fileInput = document.getElementById('infoFotoFile');
@@ -558,7 +717,7 @@
       }
     }
 
-    // FORM PENILAIAN
+    // HELPER PENGAJAR
     function loadDropdownSantriPengajar() {
       const keyClass = "Santri " + currentClassKey;
       let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
@@ -591,69 +750,6 @@
       });
     }
 
-    function simpanDataPenilaian(e) {
-      e.preventDefault();
-      const nama = document.getElementById('inputSantriTarget').value;
-      if (!nama) return alert('Pilih santri!');
-
-      const columns = JSON.parse(localStorage.getItem('rq_columns'));
-      let recordValues = {};
-
-      columns.forEach((col, idx) => {
-        recordValues[col] = document.getElementById(`col_input_${idx}`).value || '-';
-      });
-
-      let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
-      reports.push({ kelasKey: currentClassKey, nama: nama, values: recordValues });
-      localStorage.setItem('rq_reports', JSON.stringify(reports));
-
-      alert('Penilaian tersimpan!');
-      renderTabelPenilaian();
-      switchView('viewLaporan', document.querySelectorAll('.bottom-nav-item')[1]);
-    }
-
-    function renderTabelPenilaian() {
-      const thead = document.getElementById('tabelHeader');
-      const tbody = document.getElementById('tabelDataSantri');
-      const columns = JSON.parse(localStorage.getItem('rq_columns'));
-
-      let headerHtml = `<tr><th>No</th><th>Nama</th>`;
-      columns.forEach(col => headerHtml += `<th>${col}</th>`);
-      if (currentRoleCategory === 'Pengajar') headerHtml += `<th>Aksi</th>`;
-      headerHtml += `</tr>`;
-      thead.innerHTML = headerHtml;
-
-      tbody.innerHTML = '';
-      let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
-      let filtered = reports.filter(r => r.kelasKey === currentClassKey);
-      if (currentRoleCategory === 'Santri') filtered = filtered.filter(r => r.nama === currentUserName);
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${columns.length + 3}" class="text-muted">Belum ada data.</td></tr>`;
-        return;
-      }
-
-      filtered.forEach((item, index) => {
-        let row = `<tr><td>${index + 1}</td><td class="fw-bold">${item.nama}</td>`;
-        columns.forEach(col => row += `<td>${item.values[col] || '-'}</td>`);
-        if (currentRoleCategory === 'Pengajar') {
-          let origIndex = reports.indexOf(item);
-          row += `<td><button class="btn btn-danger btn-sm py-0 px-1" onclick="hapusPenilaian(${origIndex})"><i class="fa-solid fa-trash"></i></button></td>`;
-        }
-        row += `</tr>`;
-        tbody.innerHTML += row;
-      });
-    }
-
-    function hapusPenilaian(index) {
-      if (confirm('Hapus baris penilaian ini?')) {
-        let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
-        reports.splice(index, 1);
-        localStorage.setItem('rq_reports', JSON.stringify(reports));
-        renderTabelPenilaian();
-      }
-    }
-
     function tambahSantriBaru() {
       const newName = document.getElementById('newSantriName').value.trim();
       if (!newName) return alert('Isi nama santri!');
@@ -661,7 +757,7 @@
       const classSantriKey = "Santri " + currentClassKey;
       let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
 
-      dbSantri[classSantriKey].push({ nama: newName, pass: newName });
+      dbSantri[classSantriKey].push({ nama: newName, pass: newName, foto: '' });
       localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
       alert(`Santri ${newName} berhasil ditambahkan!`);
       document.getElementById('newSantriName').value = '';
@@ -685,7 +781,7 @@
       }
     }
 
-    // LOGO UPLOAD
+    // PENGATURAN LOGO & TEMA
     function simpanLogoApp() {
       const fileInput = document.getElementById('inputLogoFile');
       if (fileInput.files && fileInput.files[0]) {
@@ -693,18 +789,18 @@
         reader.onload = function(e) {
           localStorage.setItem('rq_custom_logo', e.target.result);
           loadAppLogo();
-          alert('Logo aplikasi diubah!');
+          alert('Logo berhasil diubah!');
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
-        alert('Pilih foto logo dari HP terlebih dahulu!');
+        alert('Pilih foto logo dari galeri HP terlebih dahulu!');
       }
     }
 
     function resetLogoApp() {
       localStorage.removeItem('rq_custom_logo');
       loadAppLogo();
-      alert('Logo dikembalikan!');
+      alert('Logo dikembalikan ke bawaan!');
     }
 
     function loadAppLogo() {
@@ -722,7 +818,6 @@
       }
     }
 
-    // TEMA BACKGROUND
     function setThemeBg(bgColor, mainColor, darkColor, save = true) {
       document.documentElement.style.setProperty('--bg-color', bgColor);
       document.documentElement.style.setProperty('--main-color', mainColor);
@@ -734,7 +829,6 @@
       }
     }
 
-    // GANTI PASSWORD USER
     function simpanGantiPasswordUser() {
       const newPass = document.getElementById('userNewPassInput').value.trim();
       if (!newPass) return alert('Isi password baru!');
