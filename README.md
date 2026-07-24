@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -260,6 +260,32 @@
 
     <!-- VIEW 4: MENU PENGATURAN (KHUSUS PENGAJAR) -->
     <div id="viewPengaturan" class="dashboard-view d-none">
+      
+      <!-- FITUR TAMBAH & HAPUS KOLOM PENILAIAN -->
+      <div class="card card-mobile p-3 mb-3">
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-columns me-1"></i> Kelola Kolom Penilaian</h6>
+        
+        <!-- Tambah Kolom -->
+        <div class="mb-3">
+          <label class="form-label extra-small text-muted fw-bold mb-1" style="font-size:11px;">Tambah Kolom Penilaian Baru</label>
+          <div class="input-group input-group-sm">
+            <input type="text" id="newColumnName" class="form-control" placeholder="Contoh: Hafalan Juz 30">
+            <button class="btn btn-theme" onclick="tambahKolomBaru()"><i class="fa-solid fa-plus me-1"></i>Tambah</button>
+          </div>
+        </div>
+
+        <hr class="my-2">
+
+        <!-- Hapus Kolom -->
+        <div>
+          <label class="form-label extra-small text-muted fw-bold mb-1" style="font-size:11px;">Hapus Kolom yang Tidak Dipakai</label>
+          <div class="input-group input-group-sm">
+            <select class="form-select" id="deleteColumnSelect"></select>
+            <button class="btn btn-danger fw-bold" onclick="hapusKolomPilihan()"><i class="fa-solid fa-trash me-1"></i>Hapus</button>
+          </div>
+        </div>
+      </div>
+
       <div class="card card-mobile p-3 mb-3">
         <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-upload me-1"></i> Upload Informasi Aktivitas</h6>
         <div class="mb-2">
@@ -444,6 +470,66 @@
 
     window.onload = initDatabase;
 
+    /* SKEMA DENGAN MANAJEMEN KOLOM */
+    function renderDropdownHapusKolom() {
+      const selectEl = document.getElementById('deleteColumnSelect');
+      const columns = JSON.parse(localStorage.getItem('rq_columns') || '[]');
+      selectEl.innerHTML = '<option value="">-- Pilih Kolom --</option>';
+
+      columns.forEach(col => {
+        selectEl.innerHTML += `<option value="${col}">${col}</option>`;
+      });
+    }
+
+    function tambahKolomBaru() {
+      const inputEl = document.getElementById('newColumnName');
+      const newCol = inputEl.value.trim();
+
+      if (!newCol) {
+        alert('Silakan isi nama kolom terlebih dahulu!');
+        return;
+      }
+
+      let columns = JSON.parse(localStorage.getItem('rq_columns') || '[]');
+
+      if (columns.includes(newCol)) {
+        alert('Nama kolom sudah ada!');
+        return;
+      }
+
+      columns.push(newCol);
+      localStorage.setItem('rq_columns', JSON.stringify(columns));
+
+      inputEl.value = '';
+      alert(`Kolom "${newCol}" berhasil ditambahkan!`);
+
+      renderFormInputsPenilaian();
+      renderDropdownHapusKolom();
+      renderTabelPenilaian();
+    }
+
+    function hapusKolomPilihan() {
+      const selectEl = document.getElementById('deleteColumnSelect');
+      const colToDelete = selectEl.value;
+
+      if (!colToDelete) {
+        alert('Silakan pilih kolom yang mau dihapus!');
+        return;
+      }
+
+      if (confirm(`Apakah Anda yakin ingin menghapus kolom "${colToDelete}"?`)) {
+        let columns = JSON.parse(localStorage.getItem('rq_columns') || '[]');
+        columns = columns.filter(c => c !== colToDelete);
+        localStorage.setItem('rq_columns', JSON.stringify(columns));
+
+        alert(`Kolom "${colToDelete}" berhasil dihapus.`);
+
+        renderFormInputsPenilaian();
+        renderDropdownHapusKolom();
+        renderTabelPenilaian();
+      }
+    }
+
     /* SKEMA WARNA TEMA */
     function simpanWarnaTema() {
       const selectedTheme = document.getElementById('themeColorSelect').value;
@@ -546,6 +632,7 @@
         navPengaturan.classList.remove('d-none');
         loadDropdownSantriPengajar();
         renderFormInputsPenilaian();
+        renderDropdownHapusKolom();
       } else {
         navInputNilai.classList.add('d-none');
         navPengaturan.classList.add('d-none');
