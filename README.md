@@ -82,14 +82,6 @@
       object-fit: cover;
     }
 
-    .user-profile-img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--main-color);
-    }
-
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -223,7 +215,7 @@
       </div>
     </div>
 
-    <!-- VIEW 3: INPUT NILAI -->
+    <!-- VIEW 3: INPUT NILAI PENGAJAR -->
     <div id="viewInputNilai" class="dashboard-view d-none">
       <div class="card card-mobile p-3 mb-3">
         <h6 class="fw-bold text-theme mb-3"><i class="fa-solid fa-pen-to-square me-2"></i>Form Input Penilaian</h6>
@@ -320,6 +312,34 @@
     let currentUserName = "";
     let appData = { santri: {}, reports: [], aktivitas: [], logo: "" };
 
+    // DAFTAR SANTRI AWAL BERDASARKAN KELAS
+    const defaultDataSantri = {
+      "Santri Awwal": [
+        "Ahmad Arkhan Wiratama", "Aishwa Nasha Razeeta", "Al Afkar Syabani", "Ananda Aisyah Syahidal Syail",
+        "Aqila Rafania Adifa", "Arisha Fatimah", "Asyila Rahma Khadijah", "Athaya Humaira Althafia",
+        "Bilal Zayyan Prinoza", "Desya Salsaila", "Fatimah", "Kenzie Attaya Depa", "Khuzaimah Summayyah",
+        "Muhammad Adzriel Rafif Fakhri", "Muhammad Alfatih Rinaldi", "Muhammad Alzaahiy Rinaldi",
+        "Muhammad Dzaky", "Muhammad Fathian Shariq", "Muhammad Gibran Saguftha",
+        "Muhammad Ibrahim Al Fatih Isnanto", "Muhammad Razka Destha Athallah", "Muhammad Ustman",
+        "Qahirah Arsylia Aftarinda", "Raid Asadel", "Shaqueena Salma Aryanta", "Shofiya Azzahra Hidayatulloh",
+        "Sultan Ibrahim Akbar", "Syafia Az Zahra", "Syahfira Destriani", "Syahrika Destriani",
+        "Syakira Beatric Setiawan", "Tsanwa Chayra Variin", "Vesha Sakilla", "Yusuf Al Fawwaz",
+        "Zea Mikhayla Almeera Yendra"
+      ],
+      "Santri Tsani": [
+        "Abdurrahman", "Akhtar Muhammad Rafasya", "Al Ghany Pratama", "Al Hando Pranstio",
+        "Alfarizqi Khairan Yazid", "Anina Yumna Sakhi", "Binar Al Biru Chandra", "Chaerunnisa Fathiyaturahma",
+        "Habiburahman El Shirazy", "Hana Shabiya Vina Pakpahan", "Keenan Ghayda Sakhi", "Keisha Chessy Tri Adiva",
+        "Khadijah Athiyyah Samreno", "Khaif Shakiel Badillah", "Maryam Intan Dzakiyah", "Molin Sanjaya",
+        "Muhamad Ibrahim Hidayatulloh", "Muhammad Al-Ghazello Arief", "Muhammad Hamiz Tabrani",
+        "Muhammad Raihan Wildra", "Prisha Humairah", "Qallesha Louis Nawalla", "Risya Naifah Andami",
+        "Rosa Adeliya", "Salsabila Putri Ayoenie Alfarizi", "Shaffiyah Mecca Al Fatih Isnanto",
+        "Syifa Nursabrina Robka", "Syifa Oktaviani", "Zaim Faqih Alrasyid", "Ziyadah Khaira Pakpahan"
+      ],
+      "Santri Tsalits": ["Santri Tsalits 1", "Santri Tsalits 2"],
+      "Santri Robi": ["Santri Robi 1", "Santri Robi 2"]
+    };
+
     const defaultColumns = [
       "Iqro - Capaian", "Iqro - Catatan", 
       "Hafalan Surat - Murajaah", "Hafalan Surat - Ziyadah", "Hafalan Surat - Catatan",
@@ -327,7 +347,7 @@
       "Catatan Akhlak", "Kehadiran (%)"
     ];
 
-    // MENGAMBIL DATA DARI SERVER (SINKRON REALTIME)
+    // SINKRONISASI REALTIME DENGAN DATABASE
     window.onload = function() {
       db.ref('appData').on('value', (snapshot) => {
         const val = snapshot.val();
@@ -336,13 +356,26 @@
           if (!appData.santri) appData.santri = {};
           if (!appData.reports) appData.reports = [];
           if (!appData.aktivitas) appData.aktivitas = [];
+        } else {
+          // Jika DB Firebase masih kosong, upload daftar santri default
+          let initSantri = {};
+          Object.keys(defaultDataSantri).forEach(k => {
+            initSantri[k] = defaultDataSantri[k].map(n => ({ nama: n, pass: n }));
+          });
+          appData.santri = initSantri;
+          db.ref('appData/santri').set(initSantri);
         }
+
         loadAppLogo();
         toggleLoginInputs();
+
+        // Update otomatis seluruh elemen jika dashboard sedang terbuka
         if(!document.getElementById('dashboardPage').classList.contains('d-none')) {
           renderAktivitasInfo();
           renderTabelPenilaian();
-          if(currentRoleCategory === 'Pengajar') loadDropdownSantriPengajar();
+          if(currentRoleCategory === 'Pengajar') {
+            loadDropdownSantriPengajar();
+          }
         }
       });
     };
@@ -377,7 +410,7 @@
       const passwordInput = document.getElementById('loginPassword').value;
 
       if (loginType.startsWith('Pengajar')) {
-        if (passwordInput === "darul123") { // Password Pengajar
+        if (passwordInput === "darul123") { // Password Utama Pengajar
           currentRoleCategory = "Pengajar";
           currentClassKey = loginType.replace("Pengajar ", "");
           bukaDashboard();
@@ -437,7 +470,7 @@
         reader.onload = e => {
           appData.logo = e.target.result;
           db.ref('appData/logo').set(e.target.result);
-          alert('Logo berhasil diperbarui untuk semua pengguna!');
+          alert('Logo berhasil diperbarui untuk semua HP!');
         };
         reader.readAsDataURL(fileInput.files[0]);
       }
@@ -461,47 +494,76 @@
       }
     }
 
-    // TAMBAH & HAPUS SANTRI SINKRON SERVER
+    // TAMBAH SANTRI (LANGSUNG GABUNG KE INPUT PENILAIAN & DATABASE)
     function tambahSantriBaru() {
       const newName = document.getElementById('newSantriName').value.trim();
       if (!newName) return alert('Isi nama santri!');
       const classKey = "Santri " + currentClassKey;
       if (!appData.santri[classKey]) appData.santri[classKey] = [];
 
+      // Periksa apakah nama sudah terdaftar
+      if (appData.santri[classKey].some(s => s.nama === newName)) {
+        return alert('Nama santri sudah terdaftar!');
+      }
+
+      // Tambahkan ke array database
       appData.santri[classKey].push({ nama: newName, pass: newName });
-      db.ref('appData/santri').set(appData.santri);
-      alert(`Santri ${newName} ditambahkan!`);
-      document.getElementById('newSantriName').value = '';
+      
+      // Simpan ke Firebase Realtime DB
+      db.ref('appData/santri').set(appData.santri, (error) => {
+        if (error) {
+          alert('Gagal menyimpan data.');
+        } else {
+          alert(`Santri "${newName}" berhasil ditambahkan dan siap dinilai!`);
+          document.getElementById('newSantriName').value = '';
+          
+          // Pembaruan langsung ke Form Penilaian & Hapus
+          loadDropdownSantriPengajar();
+        }
+      });
     }
 
     function hapusSantriLulus() {
       const target = document.getElementById('deleteSantriTarget').value;
-      if (!target) return alert('Pilih santri!');
+      if (!target) return alert('Pilih nama santri!');
       const classKey = "Santri " + currentClassKey;
 
-      if (confirm(`Hapus santri ${target}?`)) {
+      if (confirm(`Apakah Anda yakin menghapus santri "${target}"?`)) {
         appData.santri[classKey] = appData.santri[classKey].filter(s => s.nama !== target);
-        db.ref('appData/santri').set(appData.santri);
-        alert(`Santri ${target} terhapus.`);
+        
+        // Hapus juga laporan nilai terkait santri tersebut
+        if (appData.reports) {
+          appData.reports = appData.reports.filter(r => !(r.kelasKey === currentClassKey && r.nama === target));
+          db.ref('appData/reports').set(appData.reports);
+        }
+
+        db.ref('appData/santri').set(appData.santri, (err) => {
+          if(!err) {
+            alert(`Santri "${target}" telah berhasil dihapus.`);
+            loadDropdownSantriPengajar();
+            renderTabelPenilaian();
+          }
+        });
       }
     }
 
+    // MEMUAT DROPDOWN SANTRI PADA MENU INPUT NILAI & PENGATURAN
     function loadDropdownSantriPengajar() {
       const classKey = "Santri " + currentClassKey;
       const list = appData.santri[classKey] || [];
       const targetInput = document.getElementById('inputSantriTarget');
       const targetDelete = document.getElementById('deleteSantriTarget');
 
-      targetInput.innerHTML = '<option value="">-- Pilih Santri --</option>';
-      targetDelete.innerHTML = '<option value="">-- Pilih Santri --</option>';
+      if(targetInput) targetInput.innerHTML = '<option value="">-- Pilih Santri --</option>';
+      if(targetDelete) targetDelete.innerHTML = '<option value="">-- Pilih Santri --</option>';
 
       list.forEach(s => {
-        targetInput.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
-        targetDelete.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
+        if(targetInput) targetInput.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
+        if(targetDelete) targetDelete.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
       });
     }
 
-    // SIMPAN PENILAIAN KE SERVER
+    // INPUT PENILAIAN
     function renderFormInputsPenilaian() {
       const container = document.getElementById('dynamicFormInputs');
       container.innerHTML = '';
@@ -518,6 +580,8 @@
     function simpanDataPenilaian(e) {
       e.preventDefault();
       const namaTarget = document.getElementById('inputSantriTarget').value;
+      if(!namaTarget) return alert('Pilih nama santri!');
+
       let recordValues = {};
       defaultColumns.forEach((col, idx) => {
         recordValues[col] = document.getElementById(`col_input_${idx}`).value || '-';
@@ -531,8 +595,15 @@
         reports.push({ kelasKey: currentClassKey, nama: namaTarget, values: recordValues });
       }
 
-      db.ref('appData/reports').set(reports);
-      alert('Penilaian berhasil tersimpan di server!');
+      db.ref('appData/reports').set(reports, (err) => {
+        if(!err) {
+          alert('Penilaian berhasil tersimpan!');
+          document.getElementById('inputSantriTarget').value = '';
+          defaultColumns.forEach((_, i) => document.getElementById(`col_input_${i}`).value = '');
+          renderTabelPenilaian();
+          switchView('viewLaporan', document.querySelectorAll('.bottom-nav-item')[1]);
+        }
+      });
     }
 
     function renderTabelPenilaian() {
@@ -549,6 +620,11 @@
       let filtered = reports.filter(r => r.kelasKey === currentClassKey);
       if (currentRoleCategory === 'Santri') filtered = filtered.filter(r => r.nama === currentUserName);
 
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${defaultColumns.length + 2}" class="text-muted py-3">Belum ada data nilai.</td></tr>`;
+        return;
+      }
+
       filtered.forEach((item, index) => {
         let row = `<tr><td>${index + 1}</td><td class="fw-bold text-start">${item.nama}</td>`;
         defaultColumns.forEach(col => row += `<td>${item.values[col] || '-'}</td>`);
@@ -557,17 +633,26 @@
       });
     }
 
-    // UPLOAD AKTIVITAS KE SERVER
+    // INFORMASI AKTIVITAS
     function simpanAktivitasInfo() {
       const judul = document.getElementById('infoJudul').value;
       const deskripsi = document.getElementById('infoDeskripsi').value;
       const fileInput = document.getElementById('infoFotoFile');
 
+      if(!judul || !deskripsi) return alert('Judul dan deskripsi wajib diisi!');
+
       const save = (foto) => {
         let list = appData.aktivitas || [];
         list.unshift({ judul, deskripsi, foto: foto || '', waktu: new Date().toLocaleDateString('id-ID') });
-        db.ref('appData/aktivitas').set(list);
-        alert('Informasi dipublikasikan!');
+        db.ref('appData/aktivitas').set(list, (err) => {
+          if(!err) {
+            alert('Informasi dipublikasikan!');
+            document.getElementById('infoJudul').value = '';
+            document.getElementById('infoDeskripsi').value = '';
+            document.getElementById('infoFotoFile').value = '';
+            switchView('viewAktivitas', document.querySelector('.bottom-nav-item'));
+          }
+        });
       };
 
       if (fileInput.files[0]) {
@@ -584,12 +669,17 @@
       const list = appData.aktivitas || [];
       container.innerHTML = '';
 
+      if (list.length === 0) {
+        container.innerHTML = `<div class="text-center text-muted small py-3">Belum ada informasi/aktivitas.</div>`;
+        return;
+      }
+
       list.forEach((item) => {
         let fotoHtml = item.foto ? `<img src="${item.foto}" class="preview-img mb-2">` : '';
         container.innerHTML += `
           <div class="border-bottom pb-3 mb-3">
             <h6 class="fw-bold text-theme mb-1">${item.judul}</h6>
-            <small class="text-muted d-block mb-2">${item.waktu}</small>
+            <small class="text-muted d-block mb-2" style="font-size:10px;">${item.waktu}</small>
             ${fotoHtml}
             <p class="small text-secondary mb-0">${item.deskripsi}</p>
           </div>
