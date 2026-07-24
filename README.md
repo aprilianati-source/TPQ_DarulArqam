@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Rumah Qur'an Darul Arqam</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -28,6 +28,14 @@
       max-width: 500px;
       margin: 0 auto;
       padding: 12px;
+      transition: max-width 0.3s ease;
+    }
+
+    /* Penyesuaian Kontainer saat Desktop / Landscape */
+    @media screen and (min-width: 768px), (orientation: landscape) {
+      .mobile-container {
+        max-width: 95% !important;
+      }
     }
 
     .card-mobile {
@@ -126,7 +134,7 @@
       margin-top: 8px;
     }
 
-    /* Perbaikan CSS Tabel & Scrollbar */
+    /* Perbaikan CSS Tabel untuk Mobile & Responsive Landscape/Desktop */
     .table-responsive {
       border-radius: 10px;
       overflow-x: auto;
@@ -135,7 +143,7 @@
     }
 
     .table-responsive::-webkit-scrollbar {
-      height: 4px;
+      height: 6px;
     }
     .table-responsive::-webkit-scrollbar-thumb {
       background: var(--main-color);
@@ -145,6 +153,23 @@
     th, td {
       white-space: nowrap;
       vertical-align: middle;
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+
+    /* Optimasi Tampilan Maksimal Mode Desktop / Landscape (Tanpa Scroll) */
+    @media screen and (min-width: 768px), (orientation: landscape) {
+      .table-responsive {
+        overflow-x: visible !important;
+      }
+      .table-responsive table {
+        width: 100% !important;
+        table-layout: auto !important;
+      }
+      th, td {
+        white-space: normal !important;
+        word-wrap: break-word;
+      }
     }
   </style>
 </head>
@@ -261,6 +286,31 @@
     <!-- VIEW 4: MENU PENGATURAN (KHUSUS PENGAJAR) -->
     <div id="viewPengaturan" class="dashboard-view d-none">
       
+      <!-- FITUR KELOLA SANTRI (TAMBAH & HAPUS SANTRI LULUS/KELUAR) -->
+      <div class="card card-mobile p-3 mb-3">
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-users-gear me-1"></i> Kelola Data Santri</h6>
+        
+        <!-- Tambah Santri -->
+        <div class="mb-3">
+          <label class="form-label extra-small text-muted fw-bold mb-1" style="font-size:11px;">Tambah Santri Baru</label>
+          <div class="input-group input-group-sm">
+            <input type="text" id="newSantriName" class="form-control" placeholder="Nama Santri Baru">
+            <button class="btn btn-theme" onclick="tambahSantriBaru()"><i class="fa-solid fa-user-plus me-1"></i>Tambah</button>
+          </div>
+        </div>
+
+        <hr class="my-2">
+
+        <!-- Hapus Santri (Lulus/Keluar) -->
+        <div>
+          <label class="form-label extra-small text-muted fw-bold mb-1" style="font-size:11px;">Hapus Santri (Selesai/Lulus/Keluar)</label>
+          <div class="input-group input-group-sm">
+            <select class="form-select" id="deleteSantriTarget"></select>
+            <button class="btn btn-danger fw-bold" onclick="hapusSantriLulus()"><i class="fa-solid fa-user-minus me-1"></i>Hapus Santri</button>
+          </div>
+        </div>
+      </div>
+
       <!-- FITUR TAMBAH & HAPUS KOLOM PENILAIAN -->
       <div class="card card-mobile p-3 mb-3">
         <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-columns me-1"></i> Kelola Kolom Penilaian</h6>
@@ -298,14 +348,6 @@
           <textarea id="infoDeskripsi" class="form-control form-control-sm" rows="2" placeholder="Tulis keterangan..."></textarea>
         </div>
         <button class="btn btn-theme btn-sm w-100" onclick="simpanAktivitasInfo()">Publikasikan Info</button>
-      </div>
-
-      <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-user-plus me-1"></i> Tambah Santri Baru</h6>
-        <div class="input-group input-group-sm mb-2">
-          <input type="text" id="newSantriName" class="form-control" placeholder="Nama Santri Baru">
-          <button class="btn btn-theme" onclick="tambahSantriBaru()">Tambah</button>
-        </div>
       </div>
 
       <div class="card card-mobile p-3 mb-3">
@@ -470,6 +512,53 @@
 
     window.onload = initDatabase;
 
+    /* FITUR KELOLA SANTRI (TAMBAH & HAPUS SANTRI LULUS) */
+    function tambahSantriBaru() {
+      const newName = document.getElementById('newSantriName').value.trim();
+      if (!newName) return alert('Isi nama santri!');
+
+      const classSantriKey = "Santri " + currentClassKey;
+      let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+
+      if (dbSantri[classSantriKey].some(s => s.nama === newName)) {
+        alert('Nama santri sudah terdaftar!');
+        return;
+      }
+
+      dbSantri[classSantriKey].push({ nama: newName, pass: newName, foto: '' });
+      localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+      
+      alert(`Santri ${newName} berhasil ditambahkan!`);
+      document.getElementById('newSantriName').value = '';
+      loadDropdownSantriPengajar();
+    }
+
+    function hapusSantriLulus() {
+      const targetSantri = document.getElementById('deleteSantriTarget').value;
+      if (!targetSantri) {
+        alert('Silakan pilih nama santri yang hendak dihapus!');
+        return;
+      }
+
+      if (confirm(`Apakah Anda yakin ingin menghapus santri "${targetSantri}"? Data akun dan laporan nilainya akan dihapus permanen.`)) {
+        const classSantriKey = "Santri " + currentClassKey;
+        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+
+        // Hapus santri dari daftar
+        dbSantri[classSantriKey] = dbSantri[classSantriKey].filter(s => s.nama !== targetSantri);
+        localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+
+        // Hapus laporan nilai terkait santri ini
+        let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
+        reports = reports.filter(r => !(r.kelasKey === currentClassKey && r.nama === targetSantri));
+        localStorage.setItem('rq_reports', JSON.stringify(reports));
+
+        alert(`Data santri "${targetSantri}" telah berhasil dihapus.`);
+        loadDropdownSantriPengajar();
+        renderTabelPenilaian();
+      }
+    }
+
     /* SKEMA DENGAN MANAJEMEN KOLOM */
     function renderDropdownHapusKolom() {
       const selectEl = document.getElementById('deleteColumnSelect');
@@ -601,7 +690,7 @@
         }
 
         let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
-        let santriObj = dbSantri[loginType].find(s => s.nama === selectedSantri);
+        let santriObj = dbSantri[loginType]?.find(s => s.nama === selectedSantri);
 
         if (santriObj && santriObj.pass === passwordInput) {
           currentRoleCategory = "Santri";
@@ -732,7 +821,7 @@
       const tbody = document.getElementById('tabelDataSantri');
       const columns = JSON.parse(localStorage.getItem('rq_columns'));
 
-      let headerHtml = `<tr><th>No</th><th>Nama</th>`;
+      let headerHtml = `<tr><th>No</th><th>Nama Santri</th>`;
       columns.forEach(col => headerHtml += `<th>${col}</th>`);
       if (currentRoleCategory === 'Pengajar') headerHtml += `<th>Aksi</th>`;
       headerHtml += `</tr>`;
@@ -781,13 +870,16 @@
 
       const targetInput = document.getElementById('inputSantriTarget');
       const targetReset = document.getElementById('resetSantriTarget');
+      const targetDelete = document.getElementById('deleteSantriTarget');
 
       targetInput.innerHTML = '<option value="">-- Pilih Santri --</option>';
       targetReset.innerHTML = '<option value="">-- Pilih Santri --</option>';
+      targetDelete.innerHTML = '<option value="">-- Pilih Santri --</option>';
 
       list.forEach(s => {
         targetInput.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
         targetReset.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
+        targetDelete.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
       });
     }
 
@@ -859,20 +951,6 @@
       }
     }
 
-    function tambahSantriBaru() {
-      const newName = document.getElementById('newSantriName').value.trim();
-      if (!newName) return alert('Isi nama santri!');
-
-      const classSantriKey = "Santri " + currentClassKey;
-      let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
-
-      dbSantri[classSantriKey].push({ nama: newName, pass: newName, foto: '' });
-      localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
-      alert(`Santri ${newName} berhasil ditambahkan!`);
-      document.getElementById('newSantriName').value = '';
-      loadDropdownSantriPengajar();
-    }
-
     function resetPasswordSantri() {
       const targetName = document.getElementById('resetSantriTarget').value;
       const newPass = document.getElementById('resetSantriNewPass').value.trim();
@@ -902,7 +980,7 @@
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
-        alert('Silakan pilih berkas foto dari HP terlebih dahulu!');
+        alert('Silakan pilih berkas foto terlebih dahulu!');
       }
     }
 
