@@ -1,9 +1,9 @@
-
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TPQ Darul Arqam</title>
+  <title>Rumah Qur'an Darul Arqam</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- FontAwesome Icons -->
@@ -21,6 +21,7 @@
       color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       padding-bottom: 90px;
+      transition: background-color 0.3s ease;
     }
 
     .mobile-container {
@@ -30,11 +31,11 @@
     }
 
     .card-mobile {
-      border: 1.5px solid #c3e6cb;
+      border: 1.5px solid rgba(0, 0, 0, 0.1);
       border-radius: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       background: white;
-      overflow: hidden; /* Mencegah elemen melimpah keluar card */
+      overflow: hidden;
     }
 
     .btn-theme {
@@ -43,6 +44,7 @@
       font-weight: 600;
       border-radius: 12px;
       border: none;
+      transition: background-color 0.3s ease;
     }
     .btn-theme:hover, .btn-theme:active {
       background-color: var(--dark-color);
@@ -132,12 +134,11 @@
       margin-bottom: 0;
     }
 
-    /* Kustomisasi scrollbar tipis di bawah tabel */
     .table-responsive::-webkit-scrollbar {
       height: 4px;
     }
     .table-responsive::-webkit-scrollbar-thumb {
-      background: #c3e6cb;
+      background: var(--main-color);
       border-radius: 10px;
     }
 
@@ -160,8 +161,8 @@
         </div>
       </div>
 
-      <h3 class="fw-bold text-theme mb-0">TPQ_DarulArqam</h3>
-      <p class="text-muted small mb-4">Rumah Qur'an</p>
+      <h3 class="fw-bold text-theme mb-0">Rumah Qur'an Darul Arqam</h3>
+      <p class="text-muted small mb-4">Aplikasi Administrasi & Perkembangan Santri</p>
 
       <div class="mb-3 text-start">
         <label class="form-label fw-bold small">Tipe Login</label>
@@ -201,7 +202,7 @@
   <div id="dashboardPage" class="mobile-container d-none">
     
     <div class="mb-3">
-      <h2 class="fw-bold text-primary text-decoration-underline">TPQ_DarulArqam</h2>
+      <h2 class="fw-bold text-theme text-decoration-underline">Rumah Qur'an Darul Arqam</h2>
     </div>
 
     <!-- User Header Status -->
@@ -292,11 +293,29 @@
         </div>
       </div>
 
+      <!-- MENU GANTI LOGO LOGIN -->
       <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-sliders me-1"></i> Ubah Logo Login</h6>
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-image me-1"></i> Ganti Logo Halaman Login</h6>
+        <p class="text-muted extra-small mb-2" style="font-size: 11px;">Unggah gambar dari HP Anda untuk dijadikan logo halaman depan/login.</p>
         <input type="file" id="inputLogoFile" accept="image/*" class="form-control form-control-sm mb-2">
         <button class="btn btn-theme btn-sm w-100 mb-1" onclick="simpanLogoApp()">Simpan Logo Baru</button>
-        <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetLogoApp()">Reset Logo</button>
+        <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetLogoApp()">Reset Logo Default</button>
+      </div>
+
+      <!-- MENU PENGATURAN WARNA BACKGROUND / TEMA -->
+      <div class="card card-mobile p-3 mb-3">
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-palette me-1"></i> Pengaturan Warna Tema</h6>
+        <div class="mb-2">
+          <select class="form-select form-select-sm" id="themeColorSelect">
+            <option value="hijau">Hijau (Default)</option>
+            <option value="kuning">Kuning Emas</option>
+            <option value="biru">Biru</option>
+            <option value="merah">Merah</option>
+            <option value="ungu">Ungu</option>
+            <option value="jingga">Jingga</option>
+          </select>
+        </div>
+        <button class="btn btn-theme btn-sm w-100" onclick="simpanWarnaTema()">Terapkan Warna Tema</button>
       </div>
     </div>
 
@@ -382,6 +401,15 @@
       "Catatan Akhlak", "Kehadiran (%)"
     ];
 
+    const themePresets = {
+      "hijau": { bg: "#eef7ed", main: "#157347", dark: "#0d512f" },
+      "kuning": { bg: "#fffdf0", main: "#d4a017", dark: "#997300" },
+      "biru": { bg: "#edf4fc", main: "#0d6efd", dark: "#0a58ca" },
+      "merah": { bg: "#fceded", main: "#dc3545", dark: "#b02a37" },
+      "ungu": { bg: "#f5edf7", main: "#6f42c1", dark: "#593196" },
+      "jingga": { bg: "#fef3eb", main: "#fd7e14", dark: "#ca6510" }
+    };
+
     let currentRoleCategory = "";
     let currentClassKey = "";
     let currentUserName = "";
@@ -410,10 +438,33 @@
       }
 
       loadAppLogo();
+      loadWarnaTema();
       toggleLoginInputs();
     }
 
     window.onload = initDatabase;
+
+    /* SKEMA WARNA TEMA */
+    function simpanWarnaTema() {
+      const selectedTheme = document.getElementById('themeColorSelect').value;
+      localStorage.setItem('rq_app_theme', selectedTheme);
+      terapkanWarnaTema(selectedTheme);
+      alert('Warna tema berhasil diperbarui!');
+    }
+
+    function loadWarnaTema() {
+      const savedTheme = localStorage.getItem('rq_app_theme') || 'hijau';
+      const selectEl = document.getElementById('themeColorSelect');
+      if (selectEl) selectEl.value = savedTheme;
+      terapkanWarnaTema(savedTheme);
+    }
+
+    function terapkanWarnaTema(themeKey) {
+      const theme = themePresets[themeKey] || themePresets["hijau"];
+      document.documentElement.style.setProperty('--bg-color', theme.bg);
+      document.documentElement.style.setProperty('--main-color', theme.main);
+      document.documentElement.style.setProperty('--dark-color', theme.dark);
+    }
 
     function toggleLoginInputs() {
       const loginType = document.getElementById('loginType').value;
@@ -759,18 +810,19 @@
         reader.onload = e => {
           localStorage.setItem('rq_custom_logo', e.target.result);
           loadAppLogo();
-          alert('Logo berhasil diubah!');
+          alert('Logo halaman login berhasil diubah!');
+          fileInput.value = '';
         };
         reader.readAsDataURL(fileInput.files[0]);
       } else {
-        alert('Pilih foto terlebih dahulu!');
+        alert('Silakan pilih berkas foto dari HP terlebih dahulu!');
       }
     }
 
     function resetLogoApp() {
       localStorage.removeItem('rq_custom_logo');
       loadAppLogo();
-      alert('Logo dikembalikan!');
+      alert('Logo dikembalikan ke tampilan default!');
     }
 
     function loadAppLogo() {
