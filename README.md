@@ -20,7 +20,7 @@
       background-color: var(--bg-color); 
       color: var(--text-color);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
     }
 
     .mobile-container {
@@ -34,6 +34,7 @@
       border-radius: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       background: white;
+      overflow: hidden; /* Mencegah elemen melimpah keluar card */
     }
 
     .btn-theme {
@@ -123,13 +124,26 @@
       margin-top: 8px;
     }
 
+    /* Perbaikan CSS Tabel & Scrollbar */
     .table-responsive {
       border-radius: 10px;
       overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 0;
     }
 
-    th {
+    /* Kustomisasi scrollbar tipis di bawah tabel */
+    .table-responsive::-webkit-scrollbar {
+      height: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #c3e6cb;
+      border-radius: 10px;
+    }
+
+    th, td {
       white-space: nowrap;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -211,7 +225,7 @@
       </div>
     </div>
 
-    <!-- VIEW 2: LAPORAN PENILAIAN (TERHUBUNG OTOMATIS) -->
+    <!-- VIEW 2: LAPORAN PENILAIAN -->
     <div id="viewLaporan" class="dashboard-view d-none">
       <div class="card card-mobile p-3 mb-3">
         <h6 class="fw-bold text-theme mb-3"><i class="fa-solid fa-table me-2"></i>Laporan Perkembangan</h6>
@@ -440,12 +454,12 @@
           currentClassKey = loginType.replace("Pengajar ", "");
           bukaDashboard();
         } else {
-          alert("pasword sampean salah silahkan ulangi lagi");
+          alert("Password Anda salah, silakan ulangi lagi.");
         }
       } else {
         const selectedSantri = document.getElementById('loginSantriName').value;
         if (!selectedSantri) {
-          alert("pasword sampean salah silahkan ulangi lagi");
+          alert("Password Anda salah, silakan ulangi lagi.");
           return;
         }
 
@@ -458,7 +472,7 @@
           currentUserName = selectedSantri;
           bukaDashboard();
         } else {
-          alert("pasword sampean salah silahkan ulangi lagi");
+          alert("Password Anda salah, silakan ulangi lagi.");
         }
       }
     }
@@ -513,13 +527,11 @@
       document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
       if(btnEl) btnEl.classList.add('active');
 
-      // Refresh tabel jika beralih ke halaman Laporan
       if (viewId === 'viewLaporan') {
         renderTabelPenilaian();
       }
     }
 
-    // FORM PENILAIAN -> MENGHUBUNGKAN PENGAJAR DENGAN LAPORAN SANTRI
     function renderFormInputsPenilaian() {
       const container = document.getElementById('dynamicFormInputs');
       const columns = JSON.parse(localStorage.getItem('rq_columns'));
@@ -551,10 +563,7 @@
         recordValues[col] = inputVal ? inputVal : '-';
       });
 
-      // Simpan ke database terpusat
       let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
-      
-      // Cek apakah santri ini sudah punya baris nilai
       let existingIndex = reports.findIndex(r => r.kelasKey === currentClassKey && r.nama === namaSantriSelected);
       
       if (existingIndex !== -1) {
@@ -569,20 +578,17 @@
 
       localStorage.setItem('rq_reports', JSON.stringify(reports));
 
-      alert(`Penilaian untuk ${namaSantriSelected} berhasil disimpan dan langsung terhubung ke Laporan!`);
+      alert(`Penilaian untuk ${namaSantriSelected} berhasil disimpan!`);
 
-      // Reset Form
       document.getElementById('inputSantriTarget').value = '';
       columns.forEach((col, idx) => {
         document.getElementById(`col_input_${idx}`).value = '';
       });
 
-      // Langsung perbarui tabel laporan & pindah ke tampilan Laporan
       renderTabelPenilaian();
       switchView('viewLaporan', document.querySelectorAll('.bottom-nav-item')[1]);
     }
 
-    // MENAMPILKAN TABEL LAPORAN (PENGAJAR & SANTRI)
     function renderTabelPenilaian() {
       const thead = document.getElementById('tabelHeader');
       const tbody = document.getElementById('tabelDataSantri');
@@ -597,16 +603,14 @@
       tbody.innerHTML = '';
       let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
       
-      // Filter Berdasarkan Kelas
       let filtered = reports.filter(r => r.kelasKey === currentClassKey);
       
-      // Jika login sebagai Santri, hanya tampilkan nilainya sendiri
       if (currentRoleCategory === 'Santri') {
         filtered = filtered.filter(r => r.nama === currentUserName);
       }
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${columns.length + 3}" class="text-muted py-3">Belum ada data nilai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${columns.length + (currentRoleCategory === 'Pengajar' ? 3 : 2)}" class="text-muted py-3">Belum ada data nilai.</td></tr>`;
         return;
       }
 
@@ -632,7 +636,6 @@
       }
     }
 
-    // HELPER LAINNYA
     function loadDropdownSantriPengajar() {
       const keyClass = "Santri " + currentClassKey;
       let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
@@ -829,7 +832,7 @@
         }
       }
 
-      alert('Password Anda berhasil diperbarui!');
+      alert('Password berhasil diubah!');
       document.getElementById('userNewPassInput').value = '';
     }
 
@@ -840,8 +843,5 @@
       document.getElementById('loginPassword').value = '';
     }
   </script>
-
-  <!-- Bootstrap 5 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
