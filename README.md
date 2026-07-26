@@ -38,7 +38,7 @@
       background: white;
     }
 
-    /* Top Banner Card khas WheelCare Layout */
+    /* Top Banner Card Khas WheelCare Layout */
     .profile-card-header {
       background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
       color: white;
@@ -172,34 +172,34 @@
       <h3 class="fw-bold text-gold mb-0">TPQ Darul Arqam</h3>
       <p class="text-muted small mb-4">Sistem Penilaian Santri</p>
 
-      <!-- Pilihan Kelas & Akses -->
+      <!-- 1. Pilihan Kategori / Kelas -->
       <div class="mb-3 text-start">
-        <label class="form-label fw-bold small">Pilih Kategori Login</label>
-        <select class="form-select form-select-sm" id="loginType">
+        <label class="form-label fw-bold small">Pilih Akses & Kelas</label>
+        <select class="form-select form-select-sm" id="loginType" onchange="updateLoginFieldState()">
+          <optgroup label="Login Santri">
+            <option value="Santri Awwal">Santri Mustawa Awwal</option>
+            <option value="Santri Tsani">Santri Mustawa Tsani</option>
+            <option value="Santri Tsalits">Santri Mustawa Tsalits</option>
+            <option value="Santri Robi">Santri Mustawa Robi'</option>
+          </optgroup>
           <optgroup label="Login Pengajar">
             <option value="Pengajar Awwal">Pengajar Kelas Awwal</option>
             <option value="Pengajar Tsani">Pengajar Kelas Tsani</option>
             <option value="Pengajar Tsalits">Pengajar Kelas Tsalits</option>
             <option value="Pengajar Robi">Pengajar Kelas Robi'</option>
           </optgroup>
-          <optgroup label="Login Santri">
-            <option value="Santri Awwal">Santri Kelas Awwal</option>
-            <option value="Santri Tsani">Santri Kelas Tsani</option>
-            <option value="Santri Tsalits">Santri Kelas Tsalits</option>
-            <option value="Santri Robi">Santri Kelas Robi'</option>
-          </optgroup>
         </select>
       </div>
 
-      <!-- Input Username -->
-      <div class="mb-3 text-start">
-        <label class="form-label fw-bold small">Username</label>
-        <input type="text" class="form-control form-control-sm" id="loginUsername" placeholder="Ketik pengajar / nama santri">
+      <!-- 2. Select Nama Santri (Otomatis Muncul Sesuai Kelas) -->
+      <div class="mb-3 text-start" id="containerNamaSantri">
+        <label class="form-label fw-bold small">Pilih Nama Santri</label>
+        <select class="form-select form-select-sm" id="loginSantriName"></select>
       </div>
 
-      <!-- Input Password -->
+      <!-- 3. Password Input -->
       <div class="mb-4 text-start">
-        <label class="form-label fw-bold small">Password</label>
+        <label class="form-label fw-bold small" id="labelPassword">Password Santri</label>
         <input type="password" class="form-control form-control-sm" id="loginPassword" placeholder="Masukkan Password">
       </div>
 
@@ -233,7 +233,7 @@
       <hr class="my-2 opacity-25">
       <div class="d-flex justify-content-between align-items-center small">
         <span>Status Akses: <strong class="text-white">Aktif</strong></span>
-        <span>Tahun: <strong>2026</strong></span>
+        <span>Tahun Ajaran: <strong>2026</strong></span>
       </div>
     </div>
 
@@ -383,7 +383,7 @@
 
   <!-- JAVASCRIPT SYSTEM -->
   <script>
-    // Data Master Santri Sesuai Daftar
+    // Data Master Nama Santri
     const defaultDataSantri = {
       "Santri Awwal": [
         "Ahmad Arkhan Wiratama", "Aishwa Nasha Razeeta", "Al Afkar Syabani", "Ananda Aisyah Syahidal Syail",
@@ -445,23 +445,47 @@
       }
 
       loadAppLogo();
+      updateLoginFieldState();
     }
 
     window.onload = initDatabase;
 
+    function updateLoginFieldState() {
+      const loginType = document.getElementById('loginType').value;
+      const containerNamaSantri = document.getElementById('containerNamaSantri');
+      const labelPassword = document.getElementById('labelPassword');
+      const selectNamaSantri = document.getElementById('loginSantriName');
+
+      selectNamaSantri.innerHTML = "";
+
+      if (loginType.startsWith('Santri')) {
+        containerNamaSantri.classList.remove('d-none');
+        labelPassword.innerText = "Password Santri";
+
+        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+        let listSantriKelas = dbSantri[loginType] || [];
+
+        listSantriKelas.forEach(s => {
+          let opt = document.createElement('option');
+          opt.value = s.nama;
+          opt.innerText = s.nama;
+          selectNamaSantri.appendChild(opt);
+        });
+      } else {
+        containerNamaSantri.classList.add('d-none');
+        labelPassword.innerText = "Password Pengajar";
+      }
+
+      document.getElementById('loginPassword').value = '';
+    }
+
     function handleLogin() {
       const loginType = document.getElementById('loginType').value;
-      const usernameInput = document.getElementById('loginUsername').value.trim();
       const passwordInput = document.getElementById('loginPassword').value.trim();
-
-      if (!usernameInput || !passwordInput) {
-        alert("pasword sampean salah silahkan ulangi lagi");
-        return;
-      }
 
       if (loginType.startsWith('Pengajar')) {
         let passPengajarDb = JSON.parse(localStorage.getItem('rq_pass_pengajar'));
-        if (usernameInput.toLowerCase() === "pengajar" && passwordInput === passPengajarDb[loginType]) {
+        if (passwordInput === passPengajarDb[loginType]) {
           currentRoleCategory = "Pengajar";
           currentClassKey = loginType.replace("Pengajar ", "");
           currentUserName = "Pengajar";
@@ -470,39 +494,17 @@
           alert("pasword sampean salah silahkan ulangi lagi");
         }
       } else {
+        const selectedSantri = document.getElementById('loginSantriName').value;
+        if (!selectedSantri) {
+          alert("pasword sampean salah silahkan ulangi lagi");
+          return;
+        }
+
         let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
         let listSantri = dbSantri[loginType] || [];
-        
-        let santriObj = listSantri.find(s => 
-          s.nama.toLowerCase() === usernameInput.toLowerCase() && s.pass === passwordInput
-        );
+        let santriObj = listSantri.find(s => s.nama === selectedSantri);
 
-        if (santriObj) {
+        if (santriObj && santriObj.pass === passwordInput) {
           currentRoleCategory = "Santri";
           currentClassKey = loginType.replace("Santri ", "");
-          currentUserName = santriObj.nama;
-          bukaDashboard();
-        } else {
-          alert("pasword sampean salah silahkan ulangi lagi");
-        }
-      }
-    }
-
-    function bukaDashboard() {
-      document.getElementById('loginPage').classList.add('d-none');
-      document.getElementById('dashboardPage').classList.remove('d-none');
-      document.getElementById('bottomNav').classList.remove('d-none');
-
-      document.getElementById('userRoleTitle').innerText = currentRoleCategory === 'Pengajar' ? `Pengajar Kelas ${currentClassKey}` : currentUserName;
-      document.getElementById('userRoleSubtitle').innerText = `Mustawa ${currentClassKey}`;
-      document.getElementById('currentRoleBadge').innerText = currentClassKey;
-
-      updateHeaderAvatar();
-
-      const navInputNilai = document.getElementById('navInputNilai');
-      const navPengaturan = document.getElementById('navPengaturan');
-      const profileUploadSection = document.getElementById('profileUploadSection');
-      const resetSantriSection = document.getElementById('resetSantriSection');
-
-      if (currentRoleCategory === 'Pengajar') {
-    
+          currentUserName = sel
