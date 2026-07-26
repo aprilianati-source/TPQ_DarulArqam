@@ -38,7 +38,7 @@
       background: white;
     }
 
-    /* Top Banner Card Khas WheelCare Layout */
+    /* Top Banner Card khas WheelCare Layout */
     .profile-card-header {
       background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
       color: white;
@@ -172,34 +172,95 @@
       <h3 class="fw-bold text-gold mb-0">TPQ Darul Arqam</h3>
       <p class="text-muted small mb-4">Sistem Penilaian Santri</p>
 
-      <!-- 1. Pilihan Kategori / Kelas -->
+      <!-- 1. Dropdown Pengguna (Langsung Terisi Pengajar & Nama-Nama Santri) -->
       <div class="mb-3 text-start">
-        <label class="form-label fw-bold small">Pilih Akses & Kelas</label>
-        <select class="form-select form-select-sm" id="loginType" onchange="updateLoginFieldState()">
-          <optgroup label="Login Santri">
-            <option value="Santri Awwal">Santri Mustawa Awwal</option>
-            <option value="Santri Tsani">Santri Mustawa Tsani</option>
-            <option value="Santri Tsalits">Santri Mustawa Tsalits</option>
-            <option value="Santri Robi">Santri Mustawa Robi'</option>
+        <label class="form-label fw-bold small">Pilih Akun / Nama Santri</label>
+        <select class="form-select form-select-sm" id="loginType" onchange="updateLoginLabel()">
+          <optgroup label="Akses Pengajar">
+            <option value="Pengajar Awwal" data-type="Pengajar" data-kelas="Awwal">Pengajar - Mustawa Awwal</option>
+            <option value="Pengajar Tsani" data-type="Pengajar" data-kelas="Tsani">Pengajar - Mustawa Tsani</option>
+            <option value="Pengajar Tsalits" data-type="Pengajar" data-kelas="Tsalits">Pengajar - Mustawa Tsalits</option>
+            <option value="Pengajar Robi" data-type="Pengajar" data-kelas="Robi'">Pengajar - Mustawa Robi'</option>
           </optgroup>
-          <optgroup label="Login Pengajar">
-            <option value="Pengajar Awwal">Pengajar Kelas Awwal</option>
-            <option value="Pengajar Tsani">Pengajar Kelas Tsani</option>
-            <option value="Pengajar Tsalits">Pengajar Kelas Tsalits</option>
-            <option value="Pengajar Robi">Pengajar Kelas Robi'</option>
+
+          <!-- MUSTAWA AWWAL -->
+          <optgroup label="Santri Mustawa Awwal">
+            <option value="Ahmad Arkhan Wiratama" data-type="Santri" data-kelas="Awwal">Ahmad Arkhan Wiratama</option>
+            <option value="Aishwa Nasha Razeeta" data-type="Santri" data-kelas="Awwal">Aishwa Nasha Razeeta</option>
+            <option value="Al Afkar Syabani" data-type="Santri" data-kelas="Awwal">Al Afkar Syabani</option>
+            <option value="Ananda Aisyah Syahidal Syail" data-type="Santri" data-kelas="Awwal">Ananda Aisyah Syahidal Syail</option>
+            <option value="Aqila Rafania Adifa" data-type="Santri" data-kelas="Awwal">Aqila Rafania Adifa</option>
+            <option value="Arisha Fatimah" data-type="Santri" data-kelas="Awwal">Arisha Fatimah</option>
+            <option value="Asyila Rahma Khadijah" data-type="Santri" data-kelas="Awwal">Asyila Rahma Khadijah</option>
+            <option value="Athaya Humaira Althafia" data-type="Santri" data-kelas="Awwal">Athaya Humaira Althafia</option>
+            <option value="Bilal Zayyan Prinoza" data-type="Santri" data-kelas="Awwal">Bilal Zayyan Prinoza</option>
+            <option value="Desya Salsaila" data-type="Santri" data-kelas="Awwal">Desya Salsaila</option>
+            <option value="Fatimah" data-type="Santri" data-kelas="Awwal">Fatimah</option>
+            <option value="Kenzie Attaya Depa" data-type="Santri" data-kelas="Awwal">Kenzie Attaya Depa</option>
+            <option value="Khuzaimah Summayyah" data-type="Santri" data-kelas="Awwal">Khuzaimah Summayyah</option>
+            <option value="Muhammad Adzriel Rafif Fakhri" data-type="Santri" data-kelas="Awwal">Muhammad Adzriel Rafif Fakhri</option>
+            <option value="Muhammad Alfatih Rinaldi" data-type="Santri" data-kelas="Awwal">Muhammad Alfatih Rinaldi</option>
+            <option value="Muhammad Alzaahiy Rinaldi" data-type="Santri" data-kelas="Awwal">Muhammad Alzaahiy Rinaldi</option>
+            <option value="Muhammad Dzaky" data-type="Santri" data-kelas="Awwal">Muhammad Dzaky</option>
+            <option value="Muhammad Fathian Shariq" data-type="Santri" data-kelas="Awwal">Muhammad Fathian Shariq</option>
+            <option value="Muhammad Gibran Saguftha" data-type="Santri" data-kelas="Awwal">Muhammad Gibran Saguftha</option>
+            <option value="Muhammad Ibrahim Al Fatih Isnanto" data-type="Santri" data-kelas="Awwal">Muhammad Ibrahim Al Fatih Isnanto</option>
+            <option value="Muhammad Razka Destha Athallah" data-type="Santri" data-kelas="Awwal">Muhammad Razka Destha Athallah</option>
+            <option value="Muhammad Ustman" data-type="Santri" data-kelas="Awwal">Muhammad Ustman</option>
+            <option value="Qahirah Arsylia Aftarinda" data-type="Santri" data-kelas="Awwal">Qahirah Arsylia Aftarinda</option>
+            <option value="Raid Asadel" data-type="Santri" data-kelas="Awwal">Raid Asadel</option>
+            <option value="Shaqueena Salma Aryanta" data-type="Santri" data-kelas="Awwal">Shaqueena Salma Aryanta</option>
+            <option value="Shofiya Azzahra Hidayatulloh" data-type="Santri" data-kelas="Awwal">Shofiya Azzahra Hidayatulloh</option>
+            <option value="Sultan Ibrahim Akbar" data-type="Santri" data-kelas="Awwal">Sultan Ibrahim Akbar</option>
+            <option value="Syafia Az Zahra" data-type="Santri" data-kelas="Awwal">Syafia Az Zahra</option>
+            <option value="Syahfira Destriani" data-type="Santri" data-kelas="Awwal">Syahfira Destriani</option>
+            <option value="Syahrika Destriani" data-type="Santri" data-kelas="Awwal">Syahrika Destriani</option>
+            <option value="Syakira Beatric Setiawan" data-type="Santri" data-kelas="Awwal">Syakira Beatric Setiawan</option>
+            <option value="Tsanwa Chayra Variin" data-type="Santri" data-kelas="Awwal">Tsanwa Chayra Variin</option>
+            <option value="Vesha Sakilla" data-type="Santri" data-kelas="Awwal">Vesha Sakilla</option>
+            <option value="Yusuf Al Fawwaz" data-type="Santri" data-kelas="Awwal">Yusuf Al Fawwaz</option>
+            <option value="Zea Mikhayla Almeera Yendra" data-type="Santri" data-kelas="Awwal">Zea Mikhayla Almeera Yendra</option>
+          </optgroup>
+
+          <!-- MUSTAWA TSANI -->
+          <optgroup label="Santri Mustawa Tsani">
+            <option value="Abdurrahman" data-type="Santri" data-kelas="Tsani">Abdurrahman</option>
+            <option value="Akhtar Muhammad Rafasya" data-type="Santri" data-kelas="Tsani">Akhtar Muhammad Rafasya</option>
+            <option value="Al Ghany Pratama" data-type="Santri" data-kelas="Tsani">Al Ghany Pratama</option>
+            <option value="Al Hando Pranstio" data-type="Santri" data-kelas="Tsani">Al Hando Pranstio</option>
+            <option value="Alfarizqi Khairan Yazid" data-type="Santri" data-kelas="Tsani">Alfarizqi Khairan Yazid</option>
+            <option value="Anina Yumna Sakhi" data-type="Santri" data-kelas="Tsani">Anina Yumna Sakhi</option>
+            <option value="Binar Al Biru Chandra" data-type="Santri" data-kelas="Tsani">Binar Al Biru Chandra</option>
+            <option value="Chaerunnisa Fathiyaturahma" data-type="Santri" data-kelas="Tsani">Chaerunnisa Fathiyaturahma</option>
+            <option value="Habiburahman El Shirazy" data-type="Santri" data-kelas="Tsani">Habiburahman El Shirazy</option>
+            <option value="Hana Shabiya Vina Pakpahan" data-type="Santri" data-kelas="Tsani">Hana Shabiya Vina Pakpahan</option>
+            <option value="Keenan Ghayda Sakhi" data-type="Santri" data-kelas="Tsani">Keenan Ghayda Sakhi</option>
+            <option value="Keisha Chessy Tri Adiva" data-type="Santri" data-kelas="Tsani">Keisha Chessy Tri Adiva</option>
+            <option value="Khadijah Athiyyah Samreno" data-type="Santri" data-kelas="Tsani">Khadijah Athiyyah Samreno</option>
+            <option value="Khaif Shakiel Badillah" data-type="Santri" data-kelas="Tsani">Khaif Shakiel Badillah</option>
+            <option value="Maryam Intan Dzakiyah" data-type="Santri" data-kelas="Tsani">Maryam Intan Dzakiyah</option>
+            <option value="Molin Sanjaya" data-type="Santri" data-kelas="Tsani">Molin Sanjaya</option>
+            <option value="Muhamad Ibrahim Hidayatulloh" data-type="Santri" data-kelas="Tsani">Muhamad Ibrahim Hidayatulloh</option>
+            <option value="Muhammad Al-Ghazello Arief" data-type="Santri" data-kelas="Tsani">Muhammad Al-Ghazello Arief</option>
+            <option value="Muhammad Hamiz Tabrani" data-type="Santri" data-kelas="Tsani">Muhammad Hamiz Tabrani</option>
+            <option value="Muhammad Raihan Wildra" data-type="Santri" data-kelas="Tsani">Muhammad Raihan Wildra</option>
+            <option value="Prisha Humairah" data-type="Santri" data-kelas="Tsani">Prisha Humairah</option>
+            <option value="Qallesha Louis Nawalla" data-type="Santri" data-kelas="Tsani">Qallesha Louis Nawalla</option>
+            <option value="Risya Naifah Andami" data-type="Santri" data-kelas="Tsani">Risya Naifah Andami</option>
+            <option value="Rosa Adeliya" data-type="Santri" data-kelas="Tsani">Rosa Adeliya</option>
+            <option value="Salsabila Putri Ayoenie Alfarizi" data-type="Santri" data-kelas="Tsani">Salsabila Putri Ayoenie Alfarizi</option>
+            <option value="Shaffiyah Mecca Al Fatih Isnanto" data-type="Santri" data-kelas="Tsani">Shaffiyah Mecca Al Fatih Isnanto</option>
+            <option value="Syifa Nursabrina Robka" data-type="Santri" data-kelas="Tsani">Syifa Nursabrina Robka</option>
+            <option value="Syifa Oktaviani" data-type="Santri" data-kelas="Tsani">Syifa Oktaviani</option>
+            <option value="Zaim Faqih Alrasyid" data-type="Santri" data-kelas="Tsani">Zaim Faqih Alrasyid</option>
+            <option value="Ziyadah Khaira Pakpahan" data-type="Santri" data-kelas="Tsani">Ziyadah Khaira Pakpahan</option>
           </optgroup>
         </select>
       </div>
 
-      <!-- 2. Select Nama Santri (Otomatis Muncul Sesuai Kelas) -->
-      <div class="mb-3 text-start" id="containerNamaSantri">
-        <label class="form-label fw-bold small">Pilih Nama Santri</label>
-        <select class="form-select form-select-sm" id="loginSantriName"></select>
-      </div>
-
-      <!-- 3. Password Input -->
+      <!-- Password Input -->
       <div class="mb-4 text-start">
-        <label class="form-label fw-bold small" id="labelPassword">Password Santri</label>
+        <label class="form-label fw-bold small" id="labelPassword">Password Pengajar</label>
         <input type="password" class="form-control form-control-sm" id="loginPassword" placeholder="Masukkan Password">
       </div>
 
@@ -334,177 +395,4 @@
         <div class="mb-3 text-start border p-3 rounded-3 bg-light">
           <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-key me-1"></i> Ganti Password Saya</label>
           <input type="password" id="userNewPassInput" class="form-control form-control-sm mb-2" placeholder="Password Baru">
-          <button class="btn btn-gold btn-sm w-100" onclick="simpanGantiPasswordUser()">Simpan Password Baru</button>
-        </div>
-
-        <div class="mb-3 text-start border p-3 rounded-3 bg-light d-none" id="resetSantriSection">
-          <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-user-lock me-1"></i> Reset Password Santri Lupa</label>
-          <select class="form-select form-select-sm mb-2" id="resetSantriTarget"></select>
-          <input type="text" id="resetSantriNewPass" class="form-control form-control-sm mb-2" placeholder="Password Baru Santri">
-          <button class="btn btn-warning btn-sm w-100 fw-bold" onclick="resetPasswordSantri()">Reset Password Santri</button>
-        </div>
-
-        <hr>
-        <button class="btn btn-outline-danger w-100 fw-bold py-2" onclick="logout()">
-          <i class="fa-solid fa-right-from-bracket me-1"></i> Keluar
-        </button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ================= BOTTOM NAVIGATION BAR ================= -->
-  <nav class="bottom-nav d-none" id="bottomNav">
-    <button class="bottom-nav-item active" onclick="switchView('viewAktivitas', this)">
-      <i class="fa-solid fa-house"></i>
-      <span>Beranda</span>
-    </button>
-    <button class="bottom-nav-item" onclick="switchView('viewLaporan', this)">
-      <i class="fa-solid fa-list-check"></i>
-      <span>Penilaian</span>
-    </button>
-
-    <button class="bottom-nav-item d-none" id="navInputNilai" onclick="switchView('viewInputNilai', this)">
-      <div class="nav-btn-center">
-        <i class="fa-solid fa-plus"></i>
-      </div>
-      <span style="margin-top: 2px;">Input Nilai</span>
-    </button>
-
-    <button class="bottom-nav-item d-none" id="navPengaturan" onclick="switchView('viewPengaturan', this)">
-      <i class="fa-solid fa-sliders"></i>
-      <span>Kelola</span>
-    </button>
-    <button class="bottom-nav-item" onclick="switchView('viewAkun', this)">
-      <i class="fa-solid fa-user"></i>
-      <span>Akun</span>
-    </button>
-  </nav>
-
-  <!-- JAVASCRIPT SYSTEM -->
-  <script>
-    // Data Master Nama Santri
-    const defaultDataSantri = {
-      "Santri Awwal": [
-        "Ahmad Arkhan Wiratama", "Aishwa Nasha Razeeta", "Al Afkar Syabani", "Ananda Aisyah Syahidal Syail",
-        "Aqila Rafania Adifa", "Arisha Fatimah", "Asyila Rahma Khadijah", "Athaya Humaira Althafia",
-        "Bilal Zayyan Prinoza", "Desya Salsaila", "Fatimah", "Kenzie Attaya Depa", "Khuzaimah Summayyah",
-        "Muhammad Adzriel Rafif Fakhri", "Muhammad Alfatih Rinaldi", "Muhammad Alzaahiy Rinaldi",
-        "Muhammad Dzaky", "Muhammad Fathian Shariq", "Muhammad Gibran Saguftha",
-        "Muhammad Ibrahim Al Fatih Isnanto", "Muhammad Razka Destha Athallah", "Muhammad Ustman",
-        "Qahirah Arsylia Aftarinda", "Raid Asadel", "Shaqueena Salma Aryanta", "Shofiya Azzahra Hidayatulloh",
-        "Sultan Ibrahim Akbar", "Syafia Az Zahra", "Syahfira Destriani", "Syahrika Destriani",
-        "Syakira Beatric Setiawan", "Tsanwa Chayra Variin", "Vesha Sakilla", "Yusuf Al Fawwaz",
-        "Zea Mikhayla Almeera Yendra"
-      ],
-      "Santri Tsani": [
-        "Abdurrahman", "Akhtar Muhammad Rafasya", "Al Ghany Pratama", "Al Hando Pranstio",
-        "Alfarizqi Khairan Yazid", "Anina Yumna Sakhi", "Binar Al Biru Chandra", "Chaerunnisa Fathiyaturahma",
-        "Habiburahman El Shirazy", "Hana Shabiya Vina Pakpahan", "Keenan Ghayda Sakhi", "Keisha Chessy Tri Adiva",
-        "Khadijah Athiyyah Samreno", "Khaif Shakiel Badillah", "Maryam Intan Dzakiyah", "Molin Sanjaya",
-        "Muhamad Ibrahim Hidayatulloh", "Muhammad Al-Ghazello Arief", "Muhammad Hamiz Tabrani",
-        "Muhammad Raihan Wildra", "Prisha Humairah", "Qallesha Louis Nawalla", "Risya Naifah Andami",
-        "Rosa Adeliya", "Salsabila Putri Ayoenie Alfarizi", "Shaffiyah Mecca Al Fatih Isnanto",
-        "Syifa Nursabrina Robka", "Syifa Oktaviani", "Zaim Faqih Alrasyid", "Ziyadah Khaira Pakpahan"
-      ],
-      "Santri Tsalits": ["Santri Tsalits 1"],
-      "Santri Robi": ["Santri Robi 1"]
-    };
-
-    const defaultColumns = [
-      "Iqro / Capaian", "Catatan Iqro", 
-      "Hafalan Surat", "Catatan Hafalan", 
-      "Doa / Hadits", "Catatan Akhlak", "Kehadiran (%)"
-    ];
-
-    let currentRoleCategory = "";
-    let currentClassKey = "";
-    let currentUserName = "";
-
-    function initDatabase() {
-      if (!localStorage.getItem('rq_santri_db')) {
-        let dbSantri = {};
-        Object.keys(defaultDataSantri).forEach(key => {
-          dbSantri[key] = defaultDataSantri[key].map(nama => ({ nama: nama, pass: nama, foto: '' }));
-        });
-        localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
-      }
-
-      if (!localStorage.getItem('rq_pass_pengajar')) {
-        let passPengajar = {
-          "Pengajar Awwal": "darul123",
-          "Pengajar Tsani": "darul123",
-          "Pengajar Tsalits": "darul123",
-          "Pengajar Robi": "darul123"
-        };
-        localStorage.setItem('rq_pass_pengajar', JSON.stringify(passPengajar));
-      }
-
-      if (!localStorage.getItem('rq_columns')) {
-        localStorage.setItem('rq_columns', JSON.stringify(defaultColumns));
-      }
-
-      loadAppLogo();
-      updateLoginFieldState();
-    }
-
-    window.onload = initDatabase;
-
-    function updateLoginFieldState() {
-      const loginType = document.getElementById('loginType').value;
-      const containerNamaSantri = document.getElementById('containerNamaSantri');
-      const labelPassword = document.getElementById('labelPassword');
-      const selectNamaSantri = document.getElementById('loginSantriName');
-
-      selectNamaSantri.innerHTML = "";
-
-      if (loginType.startsWith('Santri')) {
-        containerNamaSantri.classList.remove('d-none');
-        labelPassword.innerText = "Password Santri";
-
-        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
-        let listSantriKelas = dbSantri[loginType] || [];
-
-        listSantriKelas.forEach(s => {
-          let opt = document.createElement('option');
-          opt.value = s.nama;
-          opt.innerText = s.nama;
-          selectNamaSantri.appendChild(opt);
-        });
-      } else {
-        containerNamaSantri.classList.add('d-none');
-        labelPassword.innerText = "Password Pengajar";
-      }
-
-      document.getElementById('loginPassword').value = '';
-    }
-
-    function handleLogin() {
-      const loginType = document.getElementById('loginType').value;
-      const passwordInput = document.getElementById('loginPassword').value.trim();
-
-      if (loginType.startsWith('Pengajar')) {
-        let passPengajarDb = JSON.parse(localStorage.getItem('rq_pass_pengajar'));
-        if (passwordInput === passPengajarDb[loginType]) {
-          currentRoleCategory = "Pengajar";
-          currentClassKey = loginType.replace("Pengajar ", "");
-          currentUserName = "Pengajar";
-          bukaDashboard();
-        } else {
-          alert("pasword sampean salah silahkan ulangi lagi");
-        }
-      } else {
-        const selectedSantri = document.getElementById('loginSantriName').value;
-        if (!selectedSantri) {
-          alert("pasword sampean salah silahkan ulangi lagi");
-          return;
-        }
-
-        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
-        let listSantri = dbSantri[loginType] || [];
-        let santriObj = listSantri.find(s => s.nama === selectedSantri);
-
-        if (santriObj && santriObj.pass === passwordInput) {
-          currentRoleCategory = "Santri";
-          currentClassKey = loginType.replace("Santri ", "");
-          currentUserName = sel
+          <button class="btn btn-gold btn-sm w-100" onclick="simpanGantiPasswordUs
