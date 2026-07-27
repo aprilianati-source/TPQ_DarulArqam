@@ -3,77 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TPQ Darul Arqam - Penilaian Santri</title>
+  <title>Rumah Qur'an Darul Arqam</title>
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
     :root {
-      --gold-main: #d4af37;
-      --gold-dark: #aa820a;
-      --gold-light: #fff8e7;
-      --bg-color: #fdfbf7;
-      --text-color: #2b2b2b;
+      --bg-color: #eef7ed;
+      --main-color: #157347;
+      --dark-color: #0d512f;
+      --text-color: #212529;
     }
     
     body { 
       background-color: var(--bg-color); 
       color: var(--text-color);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       padding-bottom: 90px;
+      transition: background-color 0.3s ease;
     }
 
     .mobile-container {
-      max-width: 480px;
+      max-width: 500px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 12px;
     }
 
     .card-mobile {
-      border: none;
+      border: 1.5px solid rgba(0, 0, 0, 0.1);
       border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
       background: white;
+      overflow: hidden;
     }
 
-    /* Top Banner Card khas WheelCare Layout */
-    .profile-card-header {
-      background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
-      color: white;
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: 0 6px 18px rgba(170, 130, 10, 0.25);
-    }
-
-    .btn-gold {
-      background-color: var(--gold-main);
+    .btn-theme {
+      background-color: var(--main-color);
       color: white;
       font-weight: 600;
-      border-radius: 14px;
+      border-radius: 12px;
       border: none;
+      transition: background-color 0.3s ease;
     }
-    .btn-gold:hover, .btn-gold:active {
-      background-color: var(--gold-dark);
+    .btn-theme:hover, .btn-theme:active {
+      background-color: var(--dark-color);
       color: white;
     }
 
-    .text-gold { color: var(--gold-dark) !important; }
+    .text-theme { color: var(--main-color) !important; }
 
-    /* Custom App Logo */
+    /* Logo Wrapper */
     .app-logo-wrapper {
-      width: 90px;
-      height: 90px;
+      width: 110px;
+      height: 110px;
       margin: 0 auto;
-      border-radius: 22px;
+      border-radius: 20px;
       background: #ffffff;
-      border: 3px solid var(--gold-main);
+      border: 2px solid var(--main-color);
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
     }
 
     .app-logo { 
@@ -82,77 +74,77 @@
       object-fit: cover;
     }
 
-    .stat-card-1 {
-      background: #198754;
-      color: white;
-      border-radius: 18px;
+    .user-profile-img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--main-color);
     }
 
-    /* Bottom Navigation Bar */
+    /* Bottom Nav Bar */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 70px;
+      height: 65px;
       background: white;
-      border-top: 1px solid #f0e6d2;
+      border-top: 1px solid #e0e0e0;
       display: flex;
       justify-content: space-around;
       align-items: center;
       z-index: 1000;
-      box-shadow: 0 -4px 15px rgba(0,0,0,0.04);
-      max-width: 500px;
-      margin: 0 auto;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     }
 
     .bottom-nav-item {
       text-align: center;
-      color: #a0a0a0;
+      color: #6c757d;
       font-size: 11px;
       text-decoration: none;
       background: none;
       border: none;
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
     }
 
-    .bottom-nav-item i { font-size: 19px; }
+    .bottom-nav-item i {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 2px;
+    }
 
     .bottom-nav-item.active {
-      color: var(--gold-dark);
+      color: var(--main-color);
       font-weight: bold;
     }
 
-    .nav-btn-center {
-      background: linear-gradient(135deg, var(--gold-main), var(--gold-dark));
-      color: white !important;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: -25px;
-      box-shadow: 0 4px 12px rgba(170, 130, 10, 0.4);
-    }
-    .nav-btn-center i { font-size: 20px !important; margin: 0; }
-
     .preview-img {
       max-width: 100%;
-      border-radius: 14px;
-      margin-top: 10px;
+      height: auto;
+      border-radius: 10px;
+      margin-top: 8px;
     }
 
-    .user-profile-img {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid white;
+    /* Perbaikan CSS Tabel & Scrollbar */
+    .table-responsive {
+      border-radius: 10px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-bottom: 0;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+      height: 4px;
+    }
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: var(--main-color);
+      border-radius: 10px;
+    }
+
+    th, td {
+      white-space: nowrap;
+      vertical-align: middle;
     }
   </style>
 </head>
@@ -162,237 +154,833 @@
   <div id="loginPage" class="mobile-container pt-4">
     <div class="card card-mobile text-center p-4">
       
-      <div class="mb-3 pt-2">
+      <div class="mb-3">
         <div class="app-logo-wrapper">
-          <i class="fa-solid fa-book-quran text-gold display-5" id="defaultLogo"></i>
-          <img id="customLogo" src="" class="app-logo d-none" alt="Logo">
+          <i class="fa-solid fa-book-quran text-theme display-4" id="defaultLogo"></i>
+          <img id="customLogo" src="" class="app-logo d-none" alt="Logo Aplikasi">
         </div>
       </div>
 
-      <h3 class="fw-bold text-gold mb-0">TPQ Darul Arqam</h3>
-      <p class="text-muted small mb-4">Sistem Penilaian Santri</p>
+      <h3 class="fw-bold text-theme mb-0">Rumah Qur'an Darul Arqam</h3>
+      <p class="text-muted small mb-4">Aplikasi Administrasi & Perkembangan Santri</p>
 
-      <!-- 1. Dropdown Pengguna (Langsung Terisi Pengajar & Nama-Nama Santri) -->
       <div class="mb-3 text-start">
-        <label class="form-label fw-bold small">Pilih Akun / Nama Santri</label>
-        <select class="form-select form-select-sm" id="loginType" onchange="updateLoginLabel()">
+        <label class="form-label fw-bold small">Tipe Login</label>
+        <select class="form-select form-select-sm" id="loginType" onchange="toggleLoginInputs()">
+          <optgroup label="Akses Santri / Wali Santri">
+            <option value="Santri Awwal">Santri Mustawa Awwal</option>
+            <option value="Santri Tsani">Santri Mustawa Tsani</option>
+            <option value="Santri Tsalits">Santri Mustawa Tsalits</option>
+            <option value="Santri Robi">Santri Mustawa Robi'</option>
+          </optgroup>
           <optgroup label="Akses Pengajar">
-            <option value="Pengajar Awwal" data-type="Pengajar" data-kelas="Awwal">Pengajar - Mustawa Awwal</option>
-            <option value="Pengajar Tsani" data-type="Pengajar" data-kelas="Tsani">Pengajar - Mustawa Tsani</option>
-            <option value="Pengajar Tsalits" data-type="Pengajar" data-kelas="Tsalits">Pengajar - Mustawa Tsalits</option>
-            <option value="Pengajar Robi" data-type="Pengajar" data-kelas="Robi'">Pengajar - Mustawa Robi'</option>
-          </optgroup>
-
-          <!-- MUSTAWA AWWAL -->
-          <optgroup label="Santri Mustawa Awwal">
-            <option value="Ahmad Arkhan Wiratama" data-type="Santri" data-kelas="Awwal">Ahmad Arkhan Wiratama</option>
-            <option value="Aishwa Nasha Razeeta" data-type="Santri" data-kelas="Awwal">Aishwa Nasha Razeeta</option>
-            <option value="Al Afkar Syabani" data-type="Santri" data-kelas="Awwal">Al Afkar Syabani</option>
-            <option value="Ananda Aisyah Syahidal Syail" data-type="Santri" data-kelas="Awwal">Ananda Aisyah Syahidal Syail</option>
-            <option value="Aqila Rafania Adifa" data-type="Santri" data-kelas="Awwal">Aqila Rafania Adifa</option>
-            <option value="Arisha Fatimah" data-type="Santri" data-kelas="Awwal">Arisha Fatimah</option>
-            <option value="Asyila Rahma Khadijah" data-type="Santri" data-kelas="Awwal">Asyila Rahma Khadijah</option>
-            <option value="Athaya Humaira Althafia" data-type="Santri" data-kelas="Awwal">Athaya Humaira Althafia</option>
-            <option value="Bilal Zayyan Prinoza" data-type="Santri" data-kelas="Awwal">Bilal Zayyan Prinoza</option>
-            <option value="Desya Salsaila" data-type="Santri" data-kelas="Awwal">Desya Salsaila</option>
-            <option value="Fatimah" data-type="Santri" data-kelas="Awwal">Fatimah</option>
-            <option value="Kenzie Attaya Depa" data-type="Santri" data-kelas="Awwal">Kenzie Attaya Depa</option>
-            <option value="Khuzaimah Summayyah" data-type="Santri" data-kelas="Awwal">Khuzaimah Summayyah</option>
-            <option value="Muhammad Adzriel Rafif Fakhri" data-type="Santri" data-kelas="Awwal">Muhammad Adzriel Rafif Fakhri</option>
-            <option value="Muhammad Alfatih Rinaldi" data-type="Santri" data-kelas="Awwal">Muhammad Alfatih Rinaldi</option>
-            <option value="Muhammad Alzaahiy Rinaldi" data-type="Santri" data-kelas="Awwal">Muhammad Alzaahiy Rinaldi</option>
-            <option value="Muhammad Dzaky" data-type="Santri" data-kelas="Awwal">Muhammad Dzaky</option>
-            <option value="Muhammad Fathian Shariq" data-type="Santri" data-kelas="Awwal">Muhammad Fathian Shariq</option>
-            <option value="Muhammad Gibran Saguftha" data-type="Santri" data-kelas="Awwal">Muhammad Gibran Saguftha</option>
-            <option value="Muhammad Ibrahim Al Fatih Isnanto" data-type="Santri" data-kelas="Awwal">Muhammad Ibrahim Al Fatih Isnanto</option>
-            <option value="Muhammad Razka Destha Athallah" data-type="Santri" data-kelas="Awwal">Muhammad Razka Destha Athallah</option>
-            <option value="Muhammad Ustman" data-type="Santri" data-kelas="Awwal">Muhammad Ustman</option>
-            <option value="Qahirah Arsylia Aftarinda" data-type="Santri" data-kelas="Awwal">Qahirah Arsylia Aftarinda</option>
-            <option value="Raid Asadel" data-type="Santri" data-kelas="Awwal">Raid Asadel</option>
-            <option value="Shaqueena Salma Aryanta" data-type="Santri" data-kelas="Awwal">Shaqueena Salma Aryanta</option>
-            <option value="Shofiya Azzahra Hidayatulloh" data-type="Santri" data-kelas="Awwal">Shofiya Azzahra Hidayatulloh</option>
-            <option value="Sultan Ibrahim Akbar" data-type="Santri" data-kelas="Awwal">Sultan Ibrahim Akbar</option>
-            <option value="Syafia Az Zahra" data-type="Santri" data-kelas="Awwal">Syafia Az Zahra</option>
-            <option value="Syahfira Destriani" data-type="Santri" data-kelas="Awwal">Syahfira Destriani</option>
-            <option value="Syahrika Destriani" data-type="Santri" data-kelas="Awwal">Syahrika Destriani</option>
-            <option value="Syakira Beatric Setiawan" data-type="Santri" data-kelas="Awwal">Syakira Beatric Setiawan</option>
-            <option value="Tsanwa Chayra Variin" data-type="Santri" data-kelas="Awwal">Tsanwa Chayra Variin</option>
-            <option value="Vesha Sakilla" data-type="Santri" data-kelas="Awwal">Vesha Sakilla</option>
-            <option value="Yusuf Al Fawwaz" data-type="Santri" data-kelas="Awwal">Yusuf Al Fawwaz</option>
-            <option value="Zea Mikhayla Almeera Yendra" data-type="Santri" data-kelas="Awwal">Zea Mikhayla Almeera Yendra</option>
-          </optgroup>
-
-          <!-- MUSTAWA TSANI -->
-          <optgroup label="Santri Mustawa Tsani">
-            <option value="Abdurrahman" data-type="Santri" data-kelas="Tsani">Abdurrahman</option>
-            <option value="Akhtar Muhammad Rafasya" data-type="Santri" data-kelas="Tsani">Akhtar Muhammad Rafasya</option>
-            <option value="Al Ghany Pratama" data-type="Santri" data-kelas="Tsani">Al Ghany Pratama</option>
-            <option value="Al Hando Pranstio" data-type="Santri" data-kelas="Tsani">Al Hando Pranstio</option>
-            <option value="Alfarizqi Khairan Yazid" data-type="Santri" data-kelas="Tsani">Alfarizqi Khairan Yazid</option>
-            <option value="Anina Yumna Sakhi" data-type="Santri" data-kelas="Tsani">Anina Yumna Sakhi</option>
-            <option value="Binar Al Biru Chandra" data-type="Santri" data-kelas="Tsani">Binar Al Biru Chandra</option>
-            <option value="Chaerunnisa Fathiyaturahma" data-type="Santri" data-kelas="Tsani">Chaerunnisa Fathiyaturahma</option>
-            <option value="Habiburahman El Shirazy" data-type="Santri" data-kelas="Tsani">Habiburahman El Shirazy</option>
-            <option value="Hana Shabiya Vina Pakpahan" data-type="Santri" data-kelas="Tsani">Hana Shabiya Vina Pakpahan</option>
-            <option value="Keenan Ghayda Sakhi" data-type="Santri" data-kelas="Tsani">Keenan Ghayda Sakhi</option>
-            <option value="Keisha Chessy Tri Adiva" data-type="Santri" data-kelas="Tsani">Keisha Chessy Tri Adiva</option>
-            <option value="Khadijah Athiyyah Samreno" data-type="Santri" data-kelas="Tsani">Khadijah Athiyyah Samreno</option>
-            <option value="Khaif Shakiel Badillah" data-type="Santri" data-kelas="Tsani">Khaif Shakiel Badillah</option>
-            <option value="Maryam Intan Dzakiyah" data-type="Santri" data-kelas="Tsani">Maryam Intan Dzakiyah</option>
-            <option value="Molin Sanjaya" data-type="Santri" data-kelas="Tsani">Molin Sanjaya</option>
-            <option value="Muhamad Ibrahim Hidayatulloh" data-type="Santri" data-kelas="Tsani">Muhamad Ibrahim Hidayatulloh</option>
-            <option value="Muhammad Al-Ghazello Arief" data-type="Santri" data-kelas="Tsani">Muhammad Al-Ghazello Arief</option>
-            <option value="Muhammad Hamiz Tabrani" data-type="Santri" data-kelas="Tsani">Muhammad Hamiz Tabrani</option>
-            <option value="Muhammad Raihan Wildra" data-type="Santri" data-kelas="Tsani">Muhammad Raihan Wildra</option>
-            <option value="Prisha Humairah" data-type="Santri" data-kelas="Tsani">Prisha Humairah</option>
-            <option value="Qallesha Louis Nawalla" data-type="Santri" data-kelas="Tsani">Qallesha Louis Nawalla</option>
-            <option value="Risya Naifah Andami" data-type="Santri" data-kelas="Tsani">Risya Naifah Andami</option>
-            <option value="Rosa Adeliya" data-type="Santri" data-kelas="Tsani">Rosa Adeliya</option>
-            <option value="Salsabila Putri Ayoenie Alfarizi" data-type="Santri" data-kelas="Tsani">Salsabila Putri Ayoenie Alfarizi</option>
-            <option value="Shaffiyah Mecca Al Fatih Isnanto" data-type="Santri" data-kelas="Tsani">Shaffiyah Mecca Al Fatih Isnanto</option>
-            <option value="Syifa Nursabrina Robka" data-type="Santri" data-kelas="Tsani">Syifa Nursabrina Robka</option>
-            <option value="Syifa Oktaviani" data-type="Santri" data-kelas="Tsani">Syifa Oktaviani</option>
-            <option value="Zaim Faqih Alrasyid" data-type="Santri" data-kelas="Tsani">Zaim Faqih Alrasyid</option>
-            <option value="Ziyadah Khaira Pakpahan" data-type="Santri" data-kelas="Tsani">Ziyadah Khaira Pakpahan</option>
+            <option value="Pengajar Awwal">Pengajar Kelas Awwal</option>
+            <option value="Pengajar Tsani">Pengajar Kelas Tsani</option>
+            <option value="Pengajar Tsalits">Pengajar Kelas Tsalits</option>
+            <option value="Pengajar Robi">Pengajar Kelas Robi'</option>
           </optgroup>
         </select>
       </div>
 
-      <!-- Password Input -->
-      <div class="mb-4 text-start">
-        <label class="form-label fw-bold small" id="labelPassword">Password Pengajar</label>
+      <div class="mb-3 text-start" id="santriSelectGroup">
+        <label class="form-label fw-bold small">Pilih Nama Santri</label>
+        <select class="form-select form-select-sm" id="loginSantriName"></select>
+      </div>
+
+      <div class="mb-3 text-start">
+        <label class="form-label fw-bold small" id="labelPassword">Password Santri</label>
         <input type="password" class="form-control form-control-sm" id="loginPassword" placeholder="Masukkan Password">
       </div>
 
-      <button class="btn btn-gold w-100 py-2 shadow-sm" onclick="handleLogin()">
-        Masuk Aplikasi <i class="fa-solid fa-arrow-right-to-bracket ms-1"></i>
+      <button class="btn btn-theme w-100 py-2 shadow-sm" onclick="handleLogin()">
+        Masuk <i class="fa-solid fa-arrow-right-to-bracket ms-1"></i>
       </button>
     </div>
   </div>
 
-  <!-- ================= DASHBOARD UTAMA ================= -->
+  <!-- ================= HALAMAN DASHBOARD ================= -->
   <div id="dashboardPage" class="mobile-container d-none">
     
-    <div class="d-flex align-items-center justify-content-between mb-3">
-      <h4 class="fw-bold text-gold mb-0">TPQ Darul Arqam</h4>
-      <span class="badge bg-warning text-dark px-2 py-1" id="currentRoleBadge">Awwal</span>
+    <div class="mb-3">
+      <h2 class="fw-bold text-theme text-decoration-underline">Rumah Qur'an Darul Arqam</h2>
     </div>
 
-    <!-- Header UI Card Khas WheelCare -->
-    <div class="profile-card-header mb-3">
-      <div class="d-flex align-items-center justify-content-between mb-2">
-        <div class="d-flex align-items-center">
-          <div class="me-3" id="headerAvatarContainer">
-            <i class="fa-solid fa-circle-user fs-1 text-white opacity-75"></i>
-          </div>
-          <div>
-            <h6 class="mb-0 fw-bold fs-6" id="userRoleTitle">Pengajar</h6>
-            <small class="text-white-50" id="userRoleSubtitle">Mustawa Awwal</small>
-          </div>
+    <!-- User Header Status -->
+    <div class="card card-mobile p-3 mb-3">
+      <div class="d-flex align-items-center">
+        <div class="me-3" id="headerAvatarContainer">
+          <i class="fa-solid fa-circle-user fs-1 text-theme"></i>
+        </div>
+        <div>
+          <h5 class="mb-0 fw-bold" id="userRoleTitle">Pengajar Kelas Awwal</h5>
+          <span class="text-muted small" id="userRoleSubtitle">Mustawa Awwal</span>
         </div>
       </div>
-      <hr class="my-2 opacity-25">
-      <div class="d-flex justify-content-between align-items-center small">
-        <span>Status Akses: <strong class="text-white">Aktif</strong></span>
-        <span>Tahun Ajaran: <strong>2026</strong></span>
-      </div>
     </div>
 
-    <!-- VIEW 1: BERANDA -->
+    <!-- VIEW 1: AKTIVITAS & INFORMASI -->
     <div id="viewAktivitas" class="dashboard-view">
-      <div class="card stat-card-1 p-3 mb-3">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <small class="d-block opacity-75">Perkembangan Belajar</small>
-            <h5 class="fw-bold mb-0">Lancar & Rajin</h5>
-          </div>
-          <i class="fa-solid fa-book-open fs-1 opacity-50"></i>
-        </div>
-      </div>
-
       <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-gold mb-3"><i class="fa-solid fa-bullhorn me-1"></i> Informasi & Aktivitas TPQ</h6>
+        <h6 class="fw-bold text-theme mb-3"><i class="fa-solid fa-bullhorn me-1"></i> Informasi & Aktivitas</h6>
         <div id="containerAktivitas"></div>
       </div>
     </div>
 
-    <!-- VIEW 2: LAPORAN PENILAIAN SANTRI -->
+    <!-- VIEW 2: LAPORAN PENILAIAN -->
     <div id="viewLaporan" class="dashboard-view d-none">
       <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-gold mb-3"><i class="fa-solid fa-file-lines me-2"></i>Laporan Penilaian Santri</h6>
+        <h6 class="fw-bold text-theme mb-3"><i class="fa-solid fa-table me-2"></i>Laporan Perkembangan</h6>
         <div class="table-responsive">
           <table class="table table-bordered align-middle text-center small mb-0">
-            <thead class="table-warning text-dark" id="tabelHeader"></thead>
+            <thead class="table-dark" id="tabelHeader"></thead>
             <tbody id="tabelDataSantri"></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- VIEW 3: INPUT PENILAIAN (KHUSUS PENGAJAR) -->
+    <!-- VIEW 3: INPUT NILAI (KHUSUS PENGAJAR) -->
     <div id="viewInputNilai" class="dashboard-view d-none">
       <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-gold mb-3"><i class="fa-solid fa-pen-to-square me-2"></i>Form Penilaian Santri</h6>
+        <h6 class="fw-bold text-theme mb-3"><i class="fa-solid fa-pen-to-square me-2"></i>Form Input Penilaian</h6>
         <form id="formPenilaian" onsubmit="simpanDataPenilaian(event)">
           <div class="mb-3">
-            <label class="form-label fw-bold small">Pilih Santri Target</label>
+            <label class="form-label fw-bold small">Pilih Santri</label>
             <select class="form-select form-select-sm" id="inputSantriTarget" required></select>
           </div>
+          
           <div id="dynamicFormInputs" class="row g-2"></div>
-          <button type="submit" class="btn btn-gold w-100 py-2 mt-3 shadow-sm">
-            <i class="fa-solid fa-floppy-disk me-1"></i> Simpan Penilaian
+          
+          <button type="submit" class="btn btn-theme w-100 py-2 mt-3 shadow-sm">
+            Simpan Penilaian
           </button>
         </form>
       </div>
     </div>
 
-    <!-- VIEW 4: KELOLA (KHUSUS PENGAJAR) -->
+    <!-- VIEW 4: MENU PENGATURAN (KHUSUS PENGAJAR) -->
     <div id="viewPengaturan" class="dashboard-view d-none">
-      <!-- Upload Info Aktivitas -->
+      
+      <!-- FITUR TAMBAH & HAPUS KOLOM PENILAIAN -->
       <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-gold mb-2"><i class="fa-solid fa-upload me-1"></i> Upload Informasi / Foto Aktivitas</h6>
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-columns me-1"></i> Kelola Kolom Penilaian</h6>
+        
+        <!-- Tambah Kolom -->
+        <div class="mb-3">
+          <label class="form-label extra-small text-muted fw-bold mb-1" style="font-size:11px;">Tambah Kolom Penilaian Baru</label>
+          <div class="input-group input-group-sm">
+            <input type="text" id="newColumnName" class="form-control" placeholder="Contoh: Hafalan Juz 30">
+            <button class="btn btn-theme" onclick="tambahKolomBaru()"><i class="fa-solid fa-plus me-1"></i>Tambah</button>
+          </div>
+        </div>
+
+        <hr class="my-2">
+
+        <!-- Hapus Kolom -->
+        <div>
+          <label class="form-label extra-small text-muted fw-bold mb-1" style="font-size:11px;">Hapus Kolom yang Tidak Dipakai</label>
+          <div class="input-group input-group-sm">
+            <select class="form-select" id="deleteColumnSelect"></select>
+            <button class="btn btn-danger fw-bold" onclick="hapusKolomPilihan()"><i class="fa-solid fa-trash me-1"></i>Hapus</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-mobile p-3 mb-3">
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-upload me-1"></i> Upload Informasi Aktivitas</h6>
         <div class="mb-2">
-          <input type="text" id="infoJudul" class="form-control form-control-sm" placeholder="Judul Aktivitas">
+          <input type="text" id="infoJudul" class="form-control form-control-sm" placeholder="Judul Informasi">
         </div>
         <div class="mb-2">
           <input type="file" id="infoFotoFile" accept="image/*" class="form-control form-control-sm">
         </div>
         <div class="mb-2">
-          <textarea id="infoDeskripsi" class="form-control form-control-sm" rows="2" placeholder="Detail aktivitas..."></textarea>
+          <textarea id="infoDeskripsi" class="form-control form-control-sm" rows="2" placeholder="Tulis keterangan..."></textarea>
         </div>
-        <button class="btn btn-gold btn-sm w-100" onclick="simpanAktivitasInfo()">Publikasikan</button>
+        <button class="btn btn-theme btn-sm w-100" onclick="simpanAktivitasInfo()">Publikasikan Info</button>
       </div>
 
-      <!-- Tambah Santri Baru -->
       <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-gold mb-2"><i class="fa-solid fa-user-plus me-1"></i> Tambah Santri Baru</h6>
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-user-plus me-1"></i> Tambah Santri Baru</h6>
         <div class="input-group input-group-sm mb-2">
-          <input type="text" id="newSantriName" class="form-control" placeholder="Nama Lengkap Santri">
-          <button class="btn btn-gold" onclick="tambahSantriBaru()">Tambah</button>
+          <input type="text" id="newSantriName" class="form-control" placeholder="Nama Santri Baru">
+          <button class="btn btn-theme" onclick="tambahSantriBaru()">Tambah</button>
         </div>
       </div>
 
-      <!-- Edit Logo App -->
       <div class="card card-mobile p-3 mb-3">
-        <h6 class="fw-bold text-gold mb-2"><i class="fa-solid fa-image me-1"></i> Ubah Logo Login</h6>
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-key me-1"></i> Reset Password Santri</h6>
+        <div class="mb-2">
+          <select class="form-select form-select-sm" id="resetSantriTarget"></select>
+        </div>
+        <div class="input-group input-group-sm mb-2">
+          <input type="text" id="resetSantriNewPass" class="form-control" placeholder="Password Baru">
+          <button class="btn btn-warning btn-sm fw-bold" onclick="resetPasswordSantri()">Reset</button>
+        </div>
+      </div>
+
+      <!-- MENU GANTI LOGO LOGIN -->
+      <div class="card card-mobile p-3 mb-3">
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-image me-1"></i> Ganti Logo Halaman Login</h6>
+        <p class="text-muted extra-small mb-2" style="font-size: 11px;">Unggah gambar dari HP Anda untuk dijadikan logo halaman depan/login.</p>
         <input type="file" id="inputLogoFile" accept="image/*" class="form-control form-control-sm mb-2">
-        <button class="btn btn-gold btn-sm w-100 mb-1" onclick="simpanLogoApp()">Simpan Logo</button>
-        <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetLogoApp()">Reset Default</button>
+        <button class="btn btn-theme btn-sm w-100 mb-1" onclick="simpanLogoApp()">Simpan Logo Baru</button>
+        <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetLogoApp()">Reset Logo Default</button>
+      </div>
+
+      <!-- MENU PENGATURAN WARNA BACKGROUND / TEMA -->
+      <div class="card card-mobile p-3 mb-3">
+        <h6 class="fw-bold text-theme mb-2"><i class="fa-solid fa-palette me-1"></i> Pengaturan Warna Tema</h6>
+        <div class="mb-2">
+          <select class="form-select form-select-sm" id="themeColorSelect">
+            <option value="hijau">Hijau (Default)</option>
+            <option value="kuning">Kuning Emas</option>
+            <option value="biru">Biru</option>
+            <option value="merah">Merah</option>
+            <option value="ungu">Ungu</option>
+            <option value="jingga">Jingga</option>
+          </select>
+        </div>
+        <button class="btn btn-theme btn-sm w-100" onclick="simpanWarnaTema()">Terapkan Warna Tema</button>
       </div>
     </div>
 
-    <!-- VIEW 5: AKUN & RESET PASSWORD -->
+    <!-- VIEW 5: MENU AKUN -->
     <div id="viewAkun" class="dashboard-view d-none">
       <div class="card card-mobile p-3 mb-3 text-center">
-        <h6 class="fw-bold text-gold mb-3"><i class="fa-solid fa-user-gear me-1"></i> Pengaturan Akun & Keamanan</h6>
+        <h6 class="fw-bold text-theme mb-3"><i class="fa-solid fa-user-gear me-1"></i> Pengaturan Akun</h6>
         
-        <div class="mb-3 text-start border p-3 rounded-3 bg-light d-none" id="profileUploadSection">
-          <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-camera me-1"></i> Foto Profil Santri</label>
+        <div class="mb-4 text-start border p-3 rounded-3 bg-light" id="profileUploadSection">
+          <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-image me-1"></i> Unggah Foto Profil Santri</label>
           <input type="file" id="inputProfilePhoto" accept="image/*" class="form-control form-control-sm mb-2">
-          <button class="btn btn-gold btn-sm w-100" onclick="simpanFotoProfilSantri()">Simpan Foto</button>
+          <button class="btn btn-theme btn-sm w-100" onclick="simpanFotoProfilSantri()">Simpan Foto Profil</button>
         </div>
 
-        <div class="mb-3 text-start border p-3 rounded-3 bg-light">
-          <label class="form-label small fw-bold mb-1"><i class="fa-solid fa-key me-1"></i> Ganti Password Saya</label>
-          <input type="password" id="userNewPassInput" class="form-control form-control-sm mb-2" placeholder="Password Baru">
-          <button class="btn btn-gold btn-sm w-100" onclick="simpanGantiPasswordUs
+        <div class="mb-4 text-start">
+          <label class="form-label small fw-bold"><i class="fa-solid fa-lock me-1"></i> Ganti Password Akses</label>
+          <input type="password" id="userNewPassInput" class="form-control form-control-sm mb-2" placeholder="Masukkan Password Baru">
+          <button class="btn btn-theme btn-sm w-100" onclick="simpanGantiPasswordUser()">Simpan Password</button>
+        </div>
+
+        <hr>
+
+        <button class="btn btn-outline-danger btn-sm w-100 fw-bold py-2" onclick="logout()">
+          <i class="fa-solid fa-right-from-bracket me-1"></i> Keluar Aplikasi
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= BOTTOM NAVIGATION BAR ================= -->
+  <nav class="bottom-nav d-none" id="bottomNav">
+    <button class="bottom-nav-item active" onclick="switchView('viewAktivitas', this)">
+      <i class="fa-solid fa-newspaper"></i> Info
+    </button>
+    <button class="bottom-nav-item" onclick="switchView('viewLaporan', this)">
+      <i class="fa-solid fa-list-check"></i> Laporan
+    </button>
+    <button class="bottom-nav-item d-none" id="navInputNilai" onclick="switchView('viewInputNilai', this)">
+      <i class="fa-solid fa-pen-to-square"></i> Nilai
+    </button>
+    <button class="bottom-nav-item d-none" id="navPengaturan" onclick="switchView('viewPengaturan', this)">
+      <i class="fa-solid fa-gear"></i> Pengaturan
+    </button>
+    <button class="bottom-nav-item" onclick="switchView('viewAkun', this)">
+      <i class="fa-solid fa-circle-user"></i> Akun
+    </button>
+  </nav>
+
+  <!-- JAVASCRIPT SYSTEM -->
+  <script>
+    const defaultDataSantri = {
+      "Santri Awwal": [
+        "Ahmad Arkhan Wiratama", "Aishwa Nasha Razeeta", "Al Afkar Syabani", "Ananda Aisyah Syahidal Syail",
+        "Aqila Rafania Adifa", "Arisha Fatimah", "Asyila Rahma Khadijah", "Athaya Humaira Althafia",
+        "Bilal Zayyan Prinoza", "Desya Salsaila", "Fatimah", "Kenzie Attaya Depa", "Khuzaimah Summayyah",
+        "Muhammad Adzriel Rafif Fakhri", "Muhammad Alfatih Rinaldi", "Muhammad Alzaahiy Rinaldi",
+        "Muhammad Dzaky", "Muhammad Fathian Shariq", "Muhammad Gibran Saguftha",
+        "Muhammad Ibrahim Al Fatih Isnanto", "Muhammad Razka Destha Athallah", "Muhammad Ustman",
+        "Qahirah Arsylia Aftarinda", "Raid Asadel", "Shaqueena Salma Aryanta", "Shofiya Azzahra Hidayatulloh",
+        "Sultan Ibrahim Akbar", "Syafia Az Zahra", "Syahfira Destriani", "Syahrika Destriani",
+        "Syakira Beatric Setiawan", "Tsanwa Chayra Variin", "Vesha Sakilla", "Yusuf Al Fawwaz",
+        "Zea Mikhayla Almeera Yendra"
+      ],
+      "Santri Tsani": [
+        "Abdurrahman", "Akhtar Muhammad Rafasya", "Al Ghany Pratama", "Al Hando Pranstio",
+        "Alfarizqi Khairan Yazid", "Anina Yumna Sakhi", "Binar Al Biru Chandra", "Chaerunnisa Fathiyaturahma",
+        "Habiburahman El Shirazy", "Hana Shabiya Vina Pakpahan", "Keenan Ghayda Sakhi", "Keisha Chessy Tri Adiva",
+        "Khadijah Athiyyah Samreno", "Khaif Shakiel Badillah", "Maryam Intan Dzakiyah", "Molin Sanjaya",
+        "Muhamad Ibrahim Hidayatulloh", "Muhammad Al-Ghazello Arief", "Muhammad Hamiz Tabrani",
+        "Muhammad Raihan Wildra", "Prisha Humairah", "Qallesha Louis Nawalla", "Risya Naifah Andami",
+        "Rosa Adeliya", "Salsabila Putri Ayoenie Alfarizi", "Shaffiyah Mecca Al Fatih Isnanto",
+        "Syifa Nursabrina Robka", "Syifa Oktaviani", "Zaim Faqih Alrasyid", "Ziyadah Khaira Pakpahan"
+      ],
+      "Santri Tsalits": ["Santri Tsalits 1", "Santri Tsalits 2"],
+      "Santri Robi": ["Santri Robi 1", "Santri Robi 2"]
+    };
+
+    const defaultColumns = [
+      "Iqro - Capaian", "Iqro - Catatan", 
+      "Hafalan Surat - Murajaah", "Hafalan Surat - Ziyadah", "Hafalan Surat - Catatan",
+      "Hafalan Lainnya - Hadits", "Hafalan Lainnya - Matan", "Hafalan Lainnya - Doa",
+      "Catatan Akhlak", "Kehadiran (%)"
+    ];
+
+    const themePresets = {
+      "hijau": { bg: "#eef7ed", main: "#157347", dark: "#0d512f" },
+      "kuning": { bg: "#fffdf0", main: "#d4a017", dark: "#997300" },
+      "biru": { bg: "#edf4fc", main: "#0d6efd", dark: "#0a58ca" },
+      "merah": { bg: "#fceded", main: "#dc3545", dark: "#b02a37" },
+      "ungu": { bg: "#f5edf7", main: "#6f42c1", dark: "#593196" },
+      "jingga": { bg: "#fef3eb", main: "#fd7e14", dark: "#ca6510" }
+    };
+
+    let currentRoleCategory = "";
+    let currentClassKey = "";
+    let currentUserName = "";
+
+    function initDatabase() {
+      if (!localStorage.getItem('rq_santri_db')) {
+        let dbSantri = {};
+        Object.keys(defaultDataSantri).forEach(key => {
+          dbSantri[key] = defaultDataSantri[key].map(nama => ({ nama: nama, pass: nama, foto: '' }));
+        });
+        localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+      }
+
+      if (!localStorage.getItem('rq_pass_pengajar')) {
+        let passPengajar = {
+          "Pengajar Awwal": "darul123",
+          "Pengajar Tsani": "darul123",
+          "Pengajar Tsalits": "darul123",
+          "Pengajar Robi": "darul123"
+        };
+        localStorage.setItem('rq_pass_pengajar', JSON.stringify(passPengajar));
+      }
+
+      if (!localStorage.getItem('rq_columns')) {
+        localStorage.setItem('rq_columns', JSON.stringify(defaultColumns));
+      }
+
+      loadAppLogo();
+      loadWarnaTema();
+      toggleLoginInputs();
+    }
+
+    window.onload = initDatabase;
+
+    /* SKEMA DENGAN MANAJEMEN KOLOM */
+    function renderDropdownHapusKolom() {
+      const selectEl = document.getElementById('deleteColumnSelect');
+      const columns = JSON.parse(localStorage.getItem('rq_columns') || '[]');
+      selectEl.innerHTML = '<option value="">-- Pilih Kolom --</option>';
+
+      columns.forEach(col => {
+        selectEl.innerHTML += `<option value="${col}">${col}</option>`;
+      });
+    }
+
+    function tambahKolomBaru() {
+      const inputEl = document.getElementById('newColumnName');
+      const newCol = inputEl.value.trim();
+
+      if (!newCol) {
+        alert('Silakan isi nama kolom terlebih dahulu!');
+        return;
+      }
+
+      let columns = JSON.parse(localStorage.getItem('rq_columns') || '[]');
+
+      if (columns.includes(newCol)) {
+        alert('Nama kolom sudah ada!');
+        return;
+      }
+
+      columns.push(newCol);
+      localStorage.setItem('rq_columns', JSON.stringify(columns));
+
+      inputEl.value = '';
+      alert(`Kolom "${newCol}" berhasil ditambahkan!`);
+
+      renderFormInputsPenilaian();
+      renderDropdownHapusKolom();
+      renderTabelPenilaian();
+    }
+
+    function hapusKolomPilihan() {
+      const selectEl = document.getElementById('deleteColumnSelect');
+      const colToDelete = selectEl.value;
+
+      if (!colToDelete) {
+        alert('Silakan pilih kolom yang mau dihapus!');
+        return;
+      }
+
+      if (confirm(`Apakah Anda yakin ingin menghapus kolom "${colToDelete}"?`)) {
+        let columns = JSON.parse(localStorage.getItem('rq_columns') || '[]');
+        columns = columns.filter(c => c !== colToDelete);
+        localStorage.setItem('rq_columns', JSON.stringify(columns));
+
+        alert(`Kolom "${colToDelete}" berhasil dihapus.`);
+
+        renderFormInputsPenilaian();
+        renderDropdownHapusKolom();
+        renderTabelPenilaian();
+      }
+    }
+
+    /* SKEMA WARNA TEMA */
+    function simpanWarnaTema() {
+      const selectedTheme = document.getElementById('themeColorSelect').value;
+      localStorage.setItem('rq_app_theme', selectedTheme);
+      terapkanWarnaTema(selectedTheme);
+      alert('Warna tema berhasil diperbarui!');
+    }
+
+    function loadWarnaTema() {
+      const savedTheme = localStorage.getItem('rq_app_theme') || 'hijau';
+      const selectEl = document.getElementById('themeColorSelect');
+      if (selectEl) selectEl.value = savedTheme;
+      terapkanWarnaTema(savedTheme);
+    }
+
+    function terapkanWarnaTema(themeKey) {
+      const theme = themePresets[themeKey] || themePresets["hijau"];
+      document.documentElement.style.setProperty('--bg-color', theme.bg);
+      document.documentElement.style.setProperty('--main-color', theme.main);
+      document.documentElement.style.setProperty('--dark-color', theme.dark);
+    }
+
+    function toggleLoginInputs() {
+      const loginType = document.getElementById('loginType').value;
+      const santriSelectGroup = document.getElementById('santriSelectGroup');
+      const labelPassword = document.getElementById('labelPassword');
+      const loginSantriName = document.getElementById('loginSantriName');
+
+      loginSantriName.innerHTML = "";
+
+      if (loginType.startsWith('Santri')) {
+        santriSelectGroup.classList.remove('d-none');
+        labelPassword.innerText = "Password Santri";
+
+        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+        let list = dbSantri[loginType] || [];
+        list.forEach(s => {
+          let opt = document.createElement('option');
+          opt.value = s.nama;
+          opt.innerText = s.nama;
+          loginSantriName.appendChild(opt);
+        });
+
+      } else {
+        santriSelectGroup.classList.add('d-none');
+        labelPassword.innerText = "Password Pengajar";
+      }
+      document.getElementById('loginPassword').value = '';
+    }
+
+    function handleLogin() {
+      const loginType = document.getElementById('loginType').value;
+      const passwordInput = document.getElementById('loginPassword').value;
+
+      if (loginType.startsWith('Pengajar')) {
+        let passPengajarDb = JSON.parse(localStorage.getItem('rq_pass_pengajar'));
+        if (passwordInput === passPengajarDb[loginType]) {
+          currentRoleCategory = "Pengajar";
+          currentClassKey = loginType.replace("Pengajar ", "");
+          bukaDashboard();
+        } else {
+          alert("Password Anda salah, silakan ulangi lagi.");
+        }
+      } else {
+        const selectedSantri = document.getElementById('loginSantriName').value;
+        if (!selectedSantri) {
+          alert("Password Anda salah, silakan ulangi lagi.");
+          return;
+        }
+
+        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+        let santriObj = dbSantri[loginType].find(s => s.nama === selectedSantri);
+
+        if (santriObj && santriObj.pass === passwordInput) {
+          currentRoleCategory = "Santri";
+          currentClassKey = loginType.replace("Santri ", "");
+          currentUserName = selectedSantri;
+          bukaDashboard();
+        } else {
+          alert("Password Anda salah, silakan ulangi lagi.");
+        }
+      }
+    }
+
+    function bukaDashboard() {
+      document.getElementById('loginPage').classList.add('d-none');
+      document.getElementById('dashboardPage').classList.remove('d-none');
+      document.getElementById('bottomNav').classList.remove('d-none');
+
+      document.getElementById('userRoleTitle').innerText = currentRoleCategory === 'Pengajar' ? `Pengajar Kelas ${currentClassKey}` : currentUserName;
+      document.getElementById('userRoleSubtitle').innerText = `Mustawa ${currentClassKey}`;
+
+      updateHeaderAvatar();
+
+      const navInputNilai = document.getElementById('navInputNilai');
+      const navPengaturan = document.getElementById('navPengaturan');
+
+      if (currentRoleCategory === 'Pengajar') {
+        navInputNilai.classList.remove('d-none');
+        navPengaturan.classList.remove('d-none');
+        loadDropdownSantriPengajar();
+        renderFormInputsPenilaian();
+        renderDropdownHapusKolom();
+      } else {
+        navInputNilai.classList.add('d-none');
+        navPengaturan.classList.add('d-none');
+      }
+
+      renderAktivitasInfo();
+      renderTabelPenilaian();
+      switchView('viewAktivitas', document.querySelector('.bottom-nav-item'));
+    }
+
+    function updateHeaderAvatar() {
+      const container = document.getElementById('headerAvatarContainer');
+      if (currentRoleCategory === 'Santri') {
+        const classSantriKey = "Santri " + currentClassKey;
+        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+        let santri = dbSantri[classSantriKey]?.find(s => s.nama === currentUserName);
+
+        if (santri && santri.foto) {
+          container.innerHTML = `<img src="${santri.foto}" class="user-profile-img">`;
+          return;
+        }
+      }
+      container.innerHTML = `<i class="fa-solid fa-circle-user fs-1 text-theme"></i>`;
+    }
+
+    function switchView(viewId, btnEl) {
+      document.querySelectorAll('.dashboard-view').forEach(el => el.classList.add('d-none'));
+      document.getElementById(viewId).classList.remove('d-none');
+
+      document.querySelectorAll('.bottom-nav-item').forEach(el => el.classList.remove('active'));
+      if(btnEl) btnEl.classList.add('active');
+
+      if (viewId === 'viewLaporan') {
+        renderTabelPenilaian();
+      }
+    }
+
+    function renderFormInputsPenilaian() {
+      const container = document.getElementById('dynamicFormInputs');
+      const columns = JSON.parse(localStorage.getItem('rq_columns'));
+      container.innerHTML = '';
+
+      columns.forEach((col, idx) => {
+        container.innerHTML += `
+          <div class="col-6 mb-2">
+            <label class="form-label fw-bold small text-muted mb-1" style="font-size:11px;">${col}</label>
+            <input type="text" id="col_input_${idx}" class="form-control form-control-sm" placeholder="Isi...">
+          </div>
+        `;
+      });
+    }
+
+    function simpanDataPenilaian(e) {
+      e.preventDefault();
+      const namaSantriSelected = document.getElementById('inputSantriTarget').value;
+      if (!namaSantriSelected) {
+        alert('Silakan pilih nama santri terlebih dahulu!');
+        return;
+      }
+
+      const columns = JSON.parse(localStorage.getItem('rq_columns'));
+      let recordValues = {};
+
+      columns.forEach((col, idx) => {
+        let inputVal = document.getElementById(`col_input_${idx}`).value;
+        recordValues[col] = inputVal ? inputVal : '-';
+      });
+
+      let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
+      let existingIndex = reports.findIndex(r => r.kelasKey === currentClassKey && r.nama === namaSantriSelected);
+      
+      if (existingIndex !== -1) {
+        reports[existingIndex].values = recordValues;
+      } else {
+        reports.push({
+          kelasKey: currentClassKey,
+          nama: namaSantriSelected,
+          values: recordValues
+        });
+      }
+
+      localStorage.setItem('rq_reports', JSON.stringify(reports));
+
+      alert(`Penilaian untuk ${namaSantriSelected} berhasil disimpan!`);
+
+      document.getElementById('inputSantriTarget').value = '';
+      columns.forEach((col, idx) => {
+        document.getElementById(`col_input_${idx}`).value = '';
+      });
+
+      renderTabelPenilaian();
+      switchView('viewLaporan', document.querySelectorAll('.bottom-nav-item')[1]);
+    }
+
+    function renderTabelPenilaian() {
+      const thead = document.getElementById('tabelHeader');
+      const tbody = document.getElementById('tabelDataSantri');
+      const columns = JSON.parse(localStorage.getItem('rq_columns'));
+
+      let headerHtml = `<tr><th>No</th><th>Nama</th>`;
+      columns.forEach(col => headerHtml += `<th>${col}</th>`);
+      if (currentRoleCategory === 'Pengajar') headerHtml += `<th>Aksi</th>`;
+      headerHtml += `</tr>`;
+      thead.innerHTML = headerHtml;
+
+      tbody.innerHTML = '';
+      let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
+      
+      let filtered = reports.filter(r => r.kelasKey === currentClassKey);
+      
+      if (currentRoleCategory === 'Santri') {
+        filtered = filtered.filter(r => r.nama === currentUserName);
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${columns.length + (currentRoleCategory === 'Pengajar' ? 3 : 2)}" class="text-muted py-3">Belum ada data nilai.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        let row = `<tr><td>${index + 1}</td><td class="fw-bold text-start">${item.nama}</td>`;
+        columns.forEach(col => row += `<td>${item.values[col] || '-'}</td>`);
+        
+        if (currentRoleCategory === 'Pengajar') {
+          let origIndex = reports.indexOf(item);
+          row += `<td><button class="btn btn-danger btn-sm py-0 px-2" onclick="hapusPenilaian(${origIndex})"><i class="fa-solid fa-trash"></i></button></td>`;
+        }
+        row += `</tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function hapusPenilaian(index) {
+      if (confirm('Apakah Anda yakin ingin menghapus data penilaian ini?')) {
+        let reports = JSON.parse(localStorage.getItem('rq_reports') || '[]');
+        reports.splice(index, 1);
+        localStorage.setItem('rq_reports', JSON.stringify(reports));
+        renderTabelPenilaian();
+      }
+    }
+
+    function loadDropdownSantriPengajar() {
+      const keyClass = "Santri " + currentClassKey;
+      let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+      let list = dbSantri[keyClass] || [];
+
+      const targetInput = document.getElementById('inputSantriTarget');
+      const targetReset = document.getElementById('resetSantriTarget');
+
+      targetInput.innerHTML = '<option value="">-- Pilih Santri --</option>';
+      targetReset.innerHTML = '<option value="">-- Pilih Santri --</option>';
+
+      list.forEach(s => {
+        targetInput.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
+        targetReset.innerHTML += `<option value="${s.nama}">${s.nama}</option>`;
+      });
+    }
+
+    function simpanAktivitasInfo() {
+      const judul = document.getElementById('infoJudul').value;
+      const fileInput = document.getElementById('infoFotoFile');
+      const deskripsi = document.getElementById('infoDeskripsi').value;
+
+      if (!judul || !deskripsi) return alert('Judul dan deskripsi wajib diisi!');
+
+      const processSave = (fotoData) => {
+        let listInfo = JSON.parse(localStorage.getItem('rq_aktivitas') || '[]');
+        listInfo.unshift({
+          judul: judul, foto: fotoData || '', deskripsi: deskripsi,
+          waktu: new Date().toLocaleDateString('id-ID')
+        });
+
+        localStorage.setItem('rq_aktivitas', JSON.stringify(listInfo));
+        alert('Informasi berhasil dipublikasikan!');
+        document.getElementById('infoJudul').value = '';
+        document.getElementById('infoFotoFile').value = '';
+        document.getElementById('infoDeskripsi').value = '';
+        renderAktivitasInfo();
+        switchView('viewAktivitas', document.querySelector('.bottom-nav-item'));
+      };
+
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => processSave(e.target.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        processSave('');
+      }
+    }
+
+    function renderAktivitasInfo() {
+      const container = document.getElementById('containerAktivitas');
+      const listInfo = JSON.parse(localStorage.getItem('rq_aktivitas') || '[]');
+      container.innerHTML = '';
+
+      if (listInfo.length === 0) {
+        container.innerHTML = `<div class="text-center text-muted small py-3">Belum ada informasi/aktivitas.</div>`;
+        return;
+      }
+
+      listInfo.forEach((item, idx) => {
+        let fotoHtml = item.foto ? `<img src="${item.foto}" class="preview-img mb-2">` : '';
+        let btnHapus = (currentRoleCategory === 'Pengajar') ? 
+          `<button class="btn btn-danger btn-sm py-0 px-2 mt-2" onclick="hapusAktivitasInfo(${idx})"><i class="fa-solid fa-trash"></i> Hapus</button>` : '';
+
+        container.innerHTML += `
+          <div class="border-bottom pb-3 mb-3">
+            <h6 class="fw-bold text-theme mb-1">${item.judul}</h6>
+            <small class="text-muted d-block mb-2" style="font-size:10px;">${item.waktu}</small>
+            ${fotoHtml}
+            <p class="small text-secondary mb-0">${item.deskripsi}</p>
+            ${btnHapus}
+          </div>
+        `;
+      });
+    }
+
+    function hapusAktivitasInfo(idx) {
+      if (confirm('Hapus informasi ini?')) {
+        let listInfo = JSON.parse(localStorage.getItem('rq_aktivitas') || '[]');
+        listInfo.splice(idx, 1);
+        localStorage.setItem('rq_aktivitas', JSON.stringify(listInfo));
+        renderAktivitasInfo();
+      }
+    }
+
+    function tambahSantriBaru() {
+      const newName = document.getElementById('newSantriName').value.trim();
+      if (!newName) return alert('Isi nama santri!');
+
+      const classSantriKey = "Santri " + currentClassKey;
+      let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+
+      dbSantri[classSantriKey].push({ nama: newName, pass: newName, foto: '' });
+      localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+      alert(`Santri ${newName} berhasil ditambahkan!`);
+      document.getElementById('newSantriName').value = '';
+      loadDropdownSantriPengajar();
+    }
+
+    function resetPasswordSantri() {
+      const targetName = document.getElementById('resetSantriTarget').value;
+      const newPass = document.getElementById('resetSantriNewPass').value.trim();
+      if (!targetName || !newPass) return alert('Pilih santri dan password baru!');
+
+      const classSantriKey = "Santri " + currentClassKey;
+      let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+      let santri = dbSantri[classSantriKey].find(s => s.nama === targetName);
+
+      if (santri) {
+        santri.pass = newPass;
+        localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+        alert(`Password ${targetName} berhasil diubah!`);
+        document.getElementById('resetSantriNewPass').value = '';
+      }
+    }
+
+    function simpanLogoApp() {
+      const fileInput = document.getElementById('inputLogoFile');
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          localStorage.setItem('rq_custom_logo', e.target.result);
+          loadAppLogo();
+          alert('Logo halaman login berhasil diubah!');
+          fileInput.value = '';
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        alert('Silakan pilih berkas foto dari HP terlebih dahulu!');
+      }
+    }
+
+    function resetLogoApp() {
+      localStorage.removeItem('rq_custom_logo');
+      loadAppLogo();
+      alert('Logo dikembalikan ke tampilan default!');
+    }
+
+    function loadAppLogo() {
+      const customLogo = localStorage.getItem('rq_custom_logo');
+      const logoImg = document.getElementById('customLogo');
+      const defaultIcon = document.getElementById('defaultLogo');
+
+      if (customLogo) {
+        logoImg.src = customLogo;
+        logoImg.classList.remove('d-none');
+        defaultIcon.classList.add('d-none');
+      } else {
+        logoImg.classList.add('d-none');
+        defaultIcon.classList.remove('d-none');
+      }
+    }
+
+    function simpanFotoProfilSantri() {
+      if (currentRoleCategory !== 'Santri') return alert('Fitur khusus akun Santri.');
+
+      const fileInput = document.getElementById('inputProfilePhoto');
+      if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const classSantriKey = "Santri " + currentClassKey;
+          let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+          let santri = dbSantri[classSantriKey].find(s => s.nama === currentUserName);
+
+          if (santri) {
+            santri.foto = e.target.result;
+            localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+            updateHeaderAvatar();
+            alert('Foto profil berhasil diubah!');
+            fileInput.value = '';
+          }
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        alert('Pilih foto terlebih dahulu!');
+      }
+    }
+
+    function simpanGantiPasswordUser() {
+      const newPass = document.getElementById('userNewPassInput').value.trim();
+      if (!newPass) return alert('Isi password baru!');
+
+      if (currentRoleCategory === 'Pengajar') {
+        const keyPengajar = "Pengajar " + currentClassKey;
+        let passPengajarDb = JSON.parse(localStorage.getItem('rq_pass_pengajar'));
+        passPengajarDb[keyPengajar] = newPass;
+        localStorage.setItem('rq_pass_pengajar', JSON.stringify(passPengajarDb));
+      } else {
+        const classSantriKey = "Santri " + currentClassKey;
+        let dbSantri = JSON.parse(localStorage.getItem('rq_santri_db'));
+        let santri = dbSantri[classSantriKey].find(s => s.nama === currentUserName);
+        if (santri) {
+          santri.pass = newPass;
+          localStorage.setItem('rq_santri_db', JSON.stringify(dbSantri));
+        }
+      }
+
+      alert('Password berhasil diubah!');
+      document.getElementById('userNewPassInput').value = '';
+    }
+
+    function logout() {
+      document.getElementById('dashboardPage').classList.add('d-none');
+      document.getElementById('bottomNav').classList.add('d-none');
+      document.getElementById('loginPage').classList.remove('d-none');
+      document.getElementById('loginPassword').value = '';
+    }
+  </script>
+</body>
+</html>
